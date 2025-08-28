@@ -1,14 +1,4 @@
 export function BrandsSection() {
-  const brands = [
-    { name: "MOTIVES", style: "font-light tracking-widest" },
-    { name: "SHOP•COM", style: "font-bold" },
-    { name: "LUMIERE", style: "font-light tracking-widest" },
-    { name: "isotonix", style: "font-bold text-blue-600" },
-    { name: "gotim", style: "font-bold text-teal-600" },
-    { name: "layered", style: "font-light tracking-wide" },
-    { name: "SHOP•COM", style: "font-bold" }
-  ]
-
   return (
     <section className="py-20 bg-gray-50">
       <div className="container mx-auto px-4">
