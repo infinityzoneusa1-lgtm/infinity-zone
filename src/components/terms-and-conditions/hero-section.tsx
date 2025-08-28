@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
 export function TermConditionHeroSection() {
@@ -38,7 +37,7 @@ export function TermConditionHeroSection() {
               </h1>
               <span className="inline-block text-white py-1 md:py-2 rounded text-xs md:text-sm font-medium tracking-wider mb-2 md:mb-0">
                 Welcome to Infinity Zone Marketplace (hereinafter referred to as
-                "the Website" or "we"). By accessing or using our website, you
+                &quot;the Website&quot; or &quot;we&quot;). By accessing or using our website, you
                 agree to comply with and be bound by the following terms and
                 conditions of use. Please read these terms carefully before
                 using our website.

@@ -1,5 +1,3 @@
-import { Button } from "../ui/button";
-
 export function PaymentPlanningSection() {
   return (
     <section className="py-20 bg-primary">
