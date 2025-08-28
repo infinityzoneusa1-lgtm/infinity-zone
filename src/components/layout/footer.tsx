@@ -1,3 +1,5 @@
+import Link from "next/link"
+
 export function Footer() {
   return (
     <footer 
@@ -83,9 +85,9 @@ export function Footer() {
               <a href="#" className="block hover:text-gray-300 transition-colors text-gray-200">
                 Affiliate login
               </a>
-              <a href="#" className="block hover:text-gray-300 transition-colors text-gray-200">
+              <Link href="/privacy-policy" className="block hover:text-gray-300 transition-colors text-gray-200">
                 Privacy Policy
-              </a>
+              </Link>
               <a href="#" className="block hover:text-gray-300 transition-colors text-gray-200">
                 Real Estate
               </a>
@@ -99,9 +101,9 @@ export function Footer() {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-white">Legal</h3>
             <div className="space-y-2 text-sm">
-              <a href="#" className="block hover:text-gray-300 transition-colors text-gray-200">
+              <Link href="/terms-and-conditions" className="block hover:text-gray-300 transition-colors text-gray-200">
                 Terms & Conditions
-              </a>
+              </Link>
               <a href="#" className="block hover:text-gray-300 transition-colors text-gray-200">
                 Investments
               </a>

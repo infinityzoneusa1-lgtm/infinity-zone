@@ -4,10 +4,15 @@ import { Search, Phone, Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Image from "next/image"
+import Link from "next/link"
 import { useState } from "react"
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false)
+  }
 
   return (
     <header className="bg-white border-b border-gray-200 relative">
@@ -15,37 +20,39 @@ export function Header() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center flex-shrink-0">
-            <Image
-              src="/web-logo.png"
-              alt="Infinity Zone Logo"
-              width={200}
-              height={60}
-              className="h-12 md:h-16 lg:h-20 w-auto object-contain"
-            />
+            <Link href="/">
+              <Image
+                src="/web-logo.png"
+                alt="Infinity Zone Logo"
+                width={200}
+                height={60}
+                className="h-12 md:h-16 lg:h-20 w-auto object-contain cursor-pointer"
+              />
+            </Link>
           </div>
 
           {/* Navigation - Desktop */}
           <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8">
-            <a href="#" className="text-gray-700 transition-colors font-medium text-sm tracking-wide hover:text-[#450209]">
+            <Link href="/" className="text-gray-700 transition-colors font-medium text-sm tracking-wide hover:text-[#450209]">
               HOME
-            </a>
-            <a href="#" className="text-gray-700 transition-colors font-medium text-sm tracking-wide hover:text-[#450209]">
+            </Link>
+            <Link href="/about" className="text-gray-700 transition-colors font-medium text-sm tracking-wide hover:text-[#450209]">
               ABOUT
-            </a>
+            </Link>
             <div className="relative group">
-              <a href="#" className="text-gray-700 transition-colors font-medium text-sm tracking-wide flex items-center hover:text-[#450209]">
+              <Link href="/services" className="text-gray-700 transition-colors font-medium text-sm tracking-wide flex items-center hover:text-[#450209]">
                 SERVICES
-                <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {/* <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </a>
+                </svg> */}
+              </Link>
             </div>
-            <a href="#" className="text-gray-700 transition-colors font-medium text-sm tracking-wide hover:text-[#450209]">
+            <Link href="/contact" className="text-gray-700 transition-colors font-medium text-sm tracking-wide hover:text-[#450209]">
               CONTACT
-            </a>
-            <a href="#" className="text-gray-700 transition-colors font-medium text-sm tracking-wide hover:text-[#450209]">
+            </Link>
+            <Link href="/content-creator" className="text-gray-700 transition-colors font-medium text-sm tracking-wide hover:text-[#450209]">
               CONTENT CREATOR
-            </a>
+            </Link>
           </nav>
 
           {/* Right side */}
@@ -116,21 +123,21 @@ export function Header() {
           <div className="lg:hidden absolute top-full left-0 right-0 bg-white border-b border-gray-200 shadow-lg z-50">
             <nav className="container mx-auto px-4 py-4">
               <div className="flex flex-col space-y-4">
-                <a href="#" className="text-gray-700 font-medium text-base hover:text-[#450209] transition-colors">
+                <Link href="/" onClick={closeMobileMenu} className="text-gray-700 font-medium text-base hover:text-[#450209] transition-colors">
                   HOME
-                </a>
-                <a href="#" className="text-gray-700 font-medium text-base hover:text-[#450209] transition-colors">
+                </Link>
+                <Link href="/about" onClick={closeMobileMenu} className="text-gray-700 font-medium text-base hover:text-[#450209] transition-colors">
                   ABOUT
-                </a>
-                <a href="#" className="text-gray-700 font-medium text-base hover:text-[#450209] transition-colors">
+                </Link>
+                <Link href="/services" onClick={closeMobileMenu} className="text-gray-700 font-medium text-base hover:text-[#450209] transition-colors">
                   SERVICES
-                </a>
-                <a href="#" className="text-gray-700 font-medium text-base hover:text-[#450209] transition-colors">
+                </Link>
+                <Link href="/contact" onClick={closeMobileMenu} className="text-gray-700 font-medium text-base hover:text-[#450209] transition-colors">
                   CONTACT
-                </a>
-                <a href="#" className="text-gray-700 font-medium text-base hover:text-[#450209] transition-colors">
+                </Link>
+                <Link href="/content-creator" onClick={closeMobileMenu} className="text-gray-700 font-medium text-base hover:text-[#450209] transition-colors">
                   CONTENT CREATOR
-                </a>
+                </Link>
                 
                 {/* Mobile Search */}
                 <div className="pt-4 border-t border-gray-200">
