@@ -1,41 +1,54 @@
-import { Card, CardContent } from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 
 export function CategoriesSection() {
   const categories = [
     {
       title: "Tire & Wheel Packages",
-      description: "Complete wheel and tire solutions",
-      image: "/luxury-car-wheels-and-tires.png",
+      description: "Wheels & Tires - Now 15% Savings",
+      image: "/category-2.png",
     },
     {
       title: "Get the Best Priced",
-      description: "Premium products at competitive prices",
-      image: "/luxury-car-premium-products.png",
+      description: "Free shipping over $99",
+      image: "/category-1.png",
     },
   ]
 
   return (
     <section className="py-16 bg-primary text-primary-foreground">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-12">CATEGORIES</h2>
+        <h2 className="text-4xl font-bold text-center mb-12">CATEGORIES</h2>
         <div className="grid md:grid-cols-2 gap-8">
           {categories.map((category, index) => (
-            <Card key={index} className="bg-primary-foreground text-primary overflow-hidden">
-              <CardContent className="p-0">
-                <img
-                  src={category.image || "/placeholder.svg"}
-                  alt={category.title}
-                  className="w-full h-48 object-cover"
-                />
-                <div className="p-6 space-y-4">
-                  <h3 className="text-xl font-bold text-balance">{category.title}</h3>
-                  <p className="text-muted-foreground text-pretty">{category.description}</p>
-                  <Button variant="default" size="sm">
-                    Shop Now
-                  </Button>
-                </div>
-              </CardContent>
+            <Card
+              key={index}
+              className="relative overflow-hidden rounded-xl group py-0"
+            >
+              {/* Background Image */}
+              <img
+                src={category.image || "/placeholder.svg"}
+                alt={category.title}
+                className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+
+              {/* Overlay */}
+              <div className="absolute inset-0 bg-black/50"></div>
+
+              {/* Content */}
+              <div className="absolute inset-0 flex flex-col justify-center items-start p-6 z-10 text-white space-y-2">
+                <h3 className="text-3xl font-bold">{category.title}</h3>
+                <p className="text-sm">{category.description}</p>
+              <div className="mt-6"> 
+                  <Button
+                  variant="default"
+                  size="sm"
+                  className="bg-primary hover:bg-primary-700 text-white  rounded-full py-6  px-6"
+                >
+                  Shop Now
+                </Button>
+              </div>
+              </div>
             </Card>
           ))}
         </div>
