@@ -1,6 +1,5 @@
 import { ContactHeroSection } from "@/components/contact/contact-hero-section";
 import { ContactFormSection } from "@/components/contact/contact-form-section";
-import { ContactInfoSection } from "@/components/contact/contact-info-section";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 

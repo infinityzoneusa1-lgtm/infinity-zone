@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"
 import Image from "next/image";
 
 export function CallToActionSection() {
@@ -12,7 +12,7 @@ export function CallToActionSection() {
             <span className="text-red-200">Lifestyle Today?</span>
           </h2>
           <p className="text-red-100 text-lg md:text-xl leading-relaxed max-w-2xl mx-auto">
-            Don't wait any longer. Join thousands of satisfied customers who
+            Don&apos;t wait any longer. Join thousands of satisfied customers who
             have already discovered the luxury lifestyle they deserve. Get
             started with our expert team today.
           </p>

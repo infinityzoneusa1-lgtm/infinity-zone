@@ -9,10 +9,11 @@ export function DibbaWealthSection() {
     >
       {/* Background Image with Overlay */}
       <div className="absolute inset-0">
-        <img
+        <Image
           src="/product-bg.png" // 👈 apni background image
           alt="Background"
-          className="w-full h-full object-cover"
+          fill
+          className="object-cover"
         />
       </div>
 

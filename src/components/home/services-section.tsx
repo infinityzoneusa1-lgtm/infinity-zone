@@ -40,7 +40,7 @@ export function ServicesSection() {
     <section className="py-16 bg-gray-100">
       <div className="container mx-auto px-4">
         <h2 className="text-4xl font-bold text-center text-black mb-12 tracking-wide">
-          NOW LET'S GET YOU STARTED!
+          NOW LET&apos;S GET YOU STARTED!
         </h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {services.map((service, index) => (

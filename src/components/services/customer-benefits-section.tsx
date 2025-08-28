@@ -39,14 +39,14 @@ export function CustomerBenefitsSection() {
             steady stream of income and offer a reliable way to diversify your
             investment portfolio. <br />
             4. <strong>Personalized Service:</strong> We understand that every
-            investor has unique goals and preferences. That's why we tailor our
+            investor has unique goals and preferences. That&apos;s why we tailor our
             services to meet your specific needs and objectives. <br />
             We have partnered with the DibAfric Mortgage team to streamline the
             buying process, making it even easier to secure your dream home.{" "}
             <br />
             Please note that the market value of the property can be affected by
             location (management fee applies). <br />
-            Click the "Apply now" button and our team will guide you every step
+            Click the &quot;Apply now&quot; button and our team will guide you every step
             of the way. <br />
           </p>
           <Button

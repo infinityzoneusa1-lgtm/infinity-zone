@@ -4,7 +4,6 @@ import { PaymentPlanningSection } from "@/components/services/payment-planning-s
 import { CategoriesSection } from "@/components/services/categories-section";
 import { DirectPurchaseSection } from "@/components/services/direct-purchase-section";
 import { CustomerBenefitsSection } from "@/components/services/customer-benefits-section";
-import { CallToActionSection } from "@/components/services/call-to-action-section";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 

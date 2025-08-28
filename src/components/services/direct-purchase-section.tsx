@@ -26,13 +26,13 @@ export function DirectPurchaseSection() {
             homeownership among your group members, making it more manageable
             for everyone. <br />
             3. Collaborative Decision-Making: Work together with your group to
-            find the perfect home that meets everyone's needs and preferences.{" "}
+            find the perfect home that meets everyone&apos;s needs and preferences.{" "}
             <br />
             4. Simplified Process: Our experienced team will guide you through
             the entire group purchasing process, ensuring a seamless and
             stress-free experience. <br />
             <br />
-            Whether you're a group of friends, family members, or like-minded
+            Whether you&apos;re a group of friends, family members, or like-minded
             individuals, Infinity Zone Real Estate Group Purchase offers a
             unique opportunity to achieve your homeownership dreams together.{" "}
             <br />
