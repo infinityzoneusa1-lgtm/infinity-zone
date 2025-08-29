@@ -36,7 +36,7 @@ export function InternshipSection() {
                 Internship Program{" "}
               </h1>
               <span className="inline-block text-white py-1 md:py-2 rounded text-xs md:text-sm font-medium tracking-wider mb-2 md:mb-0">
-                Don't miss out on this incredible opportunity to kickstart your
+                Don&apos;t miss out on this incredible opportunity to kickstart your
                 career and unleash your potential with Infinity Zone. Apply now
                 and embark on a journey of endless possibilities!
               </span>
