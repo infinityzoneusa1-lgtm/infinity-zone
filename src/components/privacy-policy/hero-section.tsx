@@ -33,7 +33,8 @@ export function PrivacyPolicyHeroSection() {
             >
               {" "}
               <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-white mb-2 md:mb-4 leading-tight">
-Privacy Policy              </h1>
+                Privacy Policy{" "}
+              </h1>
               <span className="inline-block text-white py-1 md:py-2 rounded text-xs md:text-sm font-medium tracking-wider mb-2 md:mb-0">
                 We’re here to assist you with any questions or inquiries you may
                 have. Please connect via our social platforms or complete the

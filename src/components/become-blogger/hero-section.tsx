@@ -1,12 +1,12 @@
 import Image from "next/image";
 
-export function HeroSection() {
+export function BloggerHeroSection() {
   return (
     <section className="relative h-[50vh] md:h-[60vh] lg:h-[70vh] min-h-[400px] md:min-h-[500px] overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image
-          src="/about-hero.png"
+          src="/blogger.png"
           alt="Beauty makeup products and brushes"
           fill
           className="object-cover"
@@ -25,20 +25,22 @@ export function HeroSection() {
             <div
               className="bg-black/60 border border-black/20 rounded-none 
                 p-4 md:p-6 lg:p-8 xl:p-10 
-                w-full max-w-3xl   // 👈 ye lagao (tailwind max-width utility)
+                w-full max-w-xl md:max-w-2xl   
                                   flex flex-col items-center justify-center text-center 
 
                 h-auto min-h-[250px] md:min-h-[300px] lg:h-[350px]
                 mx-auto sm:mx-0"
             >
-              <span className="inline-block text-white py-1 md:py-2 rounded text-xs md:text-sm font-medium tracking-wider mb-2 md:mb-0">
-                BEAUTY PRODUCT
-              </span>
+              {" "}
               <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-white mb-2 md:mb-4 leading-tight">
-                End of Year Sale
-                <br />
-                Deals
+                Become A Blogger{" "}
               </h1>
+              <span className="inline-block text-white py-1 md:py-2 rounded text-xs md:text-sm font-medium tracking-wider mb-2 md:mb-0">
+                Elevate your voice and share your passion with our dynamic
+                community. Sign up now to become an Infinity Zone blogger and
+                start creating impactful content that resonates with audiences
+                worldwide. Let your voice be heard - join us today!
+              </span>
             </div>
           </div>
         </div>

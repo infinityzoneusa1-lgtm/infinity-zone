@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState } from "react";
+import Link from "next/link";
 
 export function ContactFormSection() {
   const [formData, setFormData] = useState({
@@ -52,7 +53,10 @@ export function ContactFormSection() {
                 <Input
                   type="text"
                   value={formData.firstName}
-                  onChange={(e) => handleInputChange("firstName", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("firstName", e.target.value)
+                  }
+                  className="border border-black"
                   required
                 />
               </div>
@@ -64,7 +68,10 @@ export function ContactFormSection() {
                 <Input
                   type="text"
                   value={formData.lastName}
-                  onChange={(e) => handleInputChange("lastName", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("lastName", e.target.value)
+                  }
+                  className="border border-black"
                   required
                 />
               </div>
@@ -77,6 +84,7 @@ export function ContactFormSection() {
                   type="email"
                   value={formData.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
+                  className="border border-black"
                   required
                 />
               </div>
@@ -89,6 +97,7 @@ export function ContactFormSection() {
                   type="tel"
                   value={formData.phone}
                   onChange={(e) => handleInputChange("phone", e.target.value)}
+                  className="border border-black"
                   required
                 />
               </div>
@@ -102,7 +111,7 @@ export function ContactFormSection() {
                     handleInputChange("inquiry", value)
                   }
                 >
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full border border-black">
                     <SelectValue placeholder="Select one" />
                   </SelectTrigger>
                   <SelectContent>
@@ -123,7 +132,7 @@ export function ContactFormSection() {
                   value={formData.message}
                   onChange={(e) => handleInputChange("message", e.target.value)}
                   placeholder="Your message..."
-                  className="h-28"
+                  className="h-28 border border-black"
                 />
               </div>
             </div>
@@ -144,7 +153,7 @@ export function ContactFormSection() {
                   Preferred Method of Contact
                 </label>
                 <Select>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full border border-black">
                     <SelectValue placeholder="Select one" />
                   </SelectTrigger>
                   <SelectContent>
@@ -159,7 +168,10 @@ export function ContactFormSection() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Additional Information
                 </label>
-                <Input placeholder="How did you hear about us?" />
+                <Input
+                  placeholder="How did you hear about us?"
+                  className="border border-black"
+                />
               </div>
 
               <div>
@@ -167,7 +179,7 @@ export function ContactFormSection() {
                   Subscribe to Newsletter?
                 </label>
                 <Select>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full border border-black">
                     <SelectValue placeholder="Select one" />
                   </SelectTrigger>
                   <SelectContent>
@@ -180,8 +192,12 @@ export function ContactFormSection() {
               <div className="flex items-start space-x-2 text-sm text-gray-600">
                 <input type="checkbox" className="mt-1" />
                 <p>
-                  I agree to <a href="#" className="underline">terms & conditions</a>. 
-                  By providing my phone number, I agree to receive text messages.
+                  I agree to{" "}
+                  <Link href="/terms-and-conditions" className="underline">
+                    terms & conditions
+                  </Link>
+                  . By providing my phone number, I agree to receive text
+                  messages.
                 </p>
               </div>
 

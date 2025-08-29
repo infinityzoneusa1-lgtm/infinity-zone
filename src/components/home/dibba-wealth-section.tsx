@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button"
-import Image from "next/image"
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 export function DibbaWealthSection() {
   return (
@@ -33,22 +33,21 @@ export function DibbaWealthSection() {
             </div>
 
             <p className="text-white text-lg leading-relaxed max-w-4xl">
-  Passionate about transforming ideas into reality and empowering individuals 
-  and businesses to reach their full potential. Dibba wealth specializes in 
-  Real Estate, Entrepreneurial hub, Arts & Culture, Mortgage, and BIG - 
-  Business Consultation, Insurance and Global Operations Group.
-</p>
+              Passionate about transforming ideas into reality and empowering
+              individuals and businesses to reach their full potential. Dibba
+              wealth specializes in Real Estate, Entrepreneurial hub, Arts &
+              Culture, Mortgage, and BIG - Business Consultation, Insurance and
+              Global Operations Group.
+            </p>
 
-
-              <Button
-  variant="outline"
-  size="lg"
-  className="bg-white border-white text-black hover:bg-white hover:text-[#450209] transition-colors rounded-full px-8"
->
-  Learn More
-</Button>
-
-            </div>
+            <Button
+              variant="outline"
+              size="lg"
+              className="bg-white border-white text-black hover:bg-white hover:text-[#450209] transition-colors rounded-full px-8"
+            >
+              Learn More
+            </Button>
+          </div>
 
           {/* Right Image */}
           <div className="flex justify-center">
@@ -63,5 +62,5 @@ export function DibbaWealthSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }

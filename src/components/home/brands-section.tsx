@@ -5,7 +5,7 @@ export function BrandsSection() {
         <h2 className="text-xl md:text-2xl font-bold text-center text-black mb-8 md:mb-12 tracking-wide">
           SHOP BY BRANDS
         </h2>
-        
+
         {/* Top row */}
         <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8 lg:gap-12 mb-4 md:mb-6">
           <div className="text-lg md:text-2xl lg:text-4xl font-light tracking-widest text-gray-700 hover:text-black transition-colors cursor-pointer">
@@ -21,7 +21,7 @@ export function BrandsSection() {
             isotonix
           </div>
         </div>
-        
+
         {/* Bottom row */}
         <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8 lg:gap-12">
           <div className="text-lg md:text-2xl lg:text-4xl font-bold text-teal-600 hover:text-teal-800 transition-colors cursor-pointer">
@@ -36,5 +36,5 @@ export function BrandsSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }
