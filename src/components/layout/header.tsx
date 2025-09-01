@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, Phone, Menu, X } from "lucide-react";
+import { Search, Phone, Menu, X, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
@@ -47,6 +47,12 @@ export function Header() {
             >
               ABOUT
             </Link>
+            <Link
+              href="/shop"
+              className="text-gray-700 transition-colors font-medium text-sm tracking-wide hover:text-[#450209]"
+            >
+              SHOP
+            </Link>
             <div className="relative group">
               <Link
                 href="/services"
@@ -92,6 +98,7 @@ export function Header() {
                 </div>
               </div>
             </div>
+
             <Link
               href="/contact"
               className="text-gray-700 transition-colors font-medium text-sm tracking-wide hover:text-[#450209]"
@@ -108,7 +115,16 @@ export function Header() {
 
           {/* Right side */}
           <div className="flex items-center space-x-2 md:space-x-4">
+            {/* Cart Icon - Desktop */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="hidden md:inline-flex p-2"
+            >
+              <ShoppingCart className="w-5 h-5 text-gray-700" />
+            </Button>
             {/* Search - Desktop/Tablet */}
+            {/**
             <div className="hidden md:flex items-center relative">
               <Input
                 placeholder="Search for products..."
@@ -130,11 +146,20 @@ export function Header() {
               </Button>
             </div>
 
-            {/* Search - Mobile */}
+           // Search - Mobile  
             <Button variant="ghost" size="icon" className="md:hidden p-2">
               <Search className="w-5 h-5 text-gray-700" />
             </Button>
-
+            */}
+            <Link href={"/cart"}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="md:hidden bg-primary p-2"
+              >
+                <ShoppingCart className="w-5 h-5 text-gray-700 " />
+              </Button>
+            </Link>
             {/* Call info - Desktop only */}
             <div className="hidden xl:flex items-center space-x-2 text-gray-700">
               <Phone className="w-4 h-4" />
@@ -257,7 +282,7 @@ export function Header() {
                   CONTENT CREATOR
                 </Link>
 
-                {/* Mobile Search */}
+                {/** Mobile Search
                 <div className="pt-4 border-t border-gray-200">
                   <div className="flex items-center relative">
                     <Input
@@ -274,6 +299,7 @@ export function Header() {
                     </Button>
                   </div>
                 </div>
+                */}
 
                 {/* Mobile Contact */}
                 <div className="pt-4 border-t border-gray-200">

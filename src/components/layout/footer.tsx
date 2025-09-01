@@ -112,7 +112,7 @@ export function Footer() {
                 About
               </Link>
               <Link
-                href="#"
+                href="/#professionals"
                 className="block hover:text-gray-300 transition-colors text-gray-200"
               >
                 Our Team
@@ -124,7 +124,7 @@ export function Footer() {
                 Contact Us
               </Link>
               <a
-                href="#"
+                href="/african"
                 className="block hover:text-gray-300 transition-colors text-gray-200"
               >
                 African Development Project
@@ -143,7 +143,7 @@ export function Footer() {
             <h3 className="text-lg font-semibold text-white">Services</h3>
             <div className="space-y-2 text-sm">
               <a
-                href="#"
+                href="/shop"
                 className="block hover:text-gray-300 transition-colors text-gray-200"
               >
                 Shop
@@ -161,7 +161,7 @@ export function Footer() {
                 Privacy Policy
               </Link>
               <a
-                href="#"
+                href="/services"
                 className="block hover:text-gray-300 transition-colors text-gray-200"
               >
                 Real Estate
@@ -186,13 +186,13 @@ export function Footer() {
                 Terms & Conditions
               </Link>
               <a
-                href="#"
+                href="/coming-soon"
                 className="block hover:text-gray-300 transition-colors text-gray-200"
               >
                 Investments
               </a>
               <a
-                href="#"
+                href="/coming-soon"
                 className="block hover:text-gray-300 transition-colors text-gray-200"
               >
                 Trucking

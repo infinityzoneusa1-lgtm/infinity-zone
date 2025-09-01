@@ -1,7 +1,17 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export function DibbaWealthSection() {
+  const router = useRouter();
+
+  const handleLearnMore = () => {
+    // Navigate to the Dibba Container Storage product page (product ID 10)
+    router.push("/shop/product/10");
+  };
+
   return (
     <section
       className="relative overflow-hidden"
@@ -44,6 +54,7 @@ export function DibbaWealthSection() {
               variant="outline"
               size="lg"
               className="bg-white border-white text-black hover:bg-white hover:text-[#450209] transition-colors rounded-full px-8"
+              onClick={handleLearnMore}
             >
               Learn More
             </Button>

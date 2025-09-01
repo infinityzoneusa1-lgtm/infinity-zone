@@ -6,6 +6,7 @@ import { DirectPurchaseSection } from "@/components/services/direct-purchase-sec
 import { CustomerBenefitsSection } from "@/components/services/customer-benefits-section";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { CallToActionSection } from "@/components/services/call-to-action-section";
 
 export default function ServicesPage() {
   return (

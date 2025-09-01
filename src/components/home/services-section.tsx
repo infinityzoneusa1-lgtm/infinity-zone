@@ -3,6 +3,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import Link from "next/link";
 
 export function ServicesSection() {
   const services = [
@@ -13,6 +14,7 @@ export function ServicesSection() {
       image: "/Container-1.png",
       label: "VENDOR",
       labelColor: "bg-primary",
+      link: "/vendor-app",
     },
     {
       title: "Drivers' Application",
@@ -21,6 +23,7 @@ export function ServicesSection() {
       image: "/Container-2.png",
       label: "DRIVER",
       labelColor: "bg-primary",
+      link: "/coming-soon",
     },
     {
       title: "Investors' Page",
@@ -29,6 +32,7 @@ export function ServicesSection() {
       image: "/Container-3.png",
       label: "INVESTOR",
       labelColor: "bg-primary",
+      link: "/coming-soon",
     },
     {
       title: "Affiliate Programs",
@@ -37,6 +41,7 @@ export function ServicesSection() {
       image: "/Container-4.png",
       label: "AFFILIATE",
       labelColor: "bg-primary",
+      link: "https://infinityzoneaffiliates.app.clientclub.net/login",
     },
   ];
 
@@ -81,18 +86,11 @@ export function ServicesSection() {
 
                   {/* Button fixed at bottom left */}
                   <div className="flex justify-start mt-auto">
-                    <Button
-                      className="text-white font-medium py-3 px-8 rounded-full text-sm uppercase tracking-wide"
-                      style={{ backgroundColor: "#450209" }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.backgroundColor = "#350107")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.backgroundColor = "#450209")
-                      }
-                    >
-                      CLICK NOW
-                    </Button>
+                    <Link href={service.link}>
+                      <Button className="text-white font-medium py-3 px-8 rounded-full text-sm uppercase tracking-wide">
+                        CLICK NOW
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               </CardContent>
