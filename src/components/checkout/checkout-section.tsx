@@ -376,9 +376,9 @@ export function CheckoutSection() {
                 amount={total}
                 orderDetails={{
                   customer: formData,
-                  items: cartItems.map(item => ({
+                  items: cartItems.map((item) => ({
                     ...item,
-                    id: item.id.toString()
+                    id: item.id.toString(),
                   })),
                   subtotal,
                   shipping,

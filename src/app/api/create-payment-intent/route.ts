@@ -1,10 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-// Initialize Stripe with secret key
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2025-08-27.basil',
-});
+// Initialize Stripe only if secret key is available and not a placeholder
+const getStripeInstance = () => {
+  const secretKey = process.env.STRIPE_SECRET_KEY;
+  if (!secretKey || secretKey === 'sk_test_placeholder' || secretKey.length < 10) {
+    return null;
+  }
+  return new Stripe(secretKey, {
+    apiVersion: '2025-08-27.basil',
+  });
+};
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,8 +24,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Get Stripe instance
+    const stripe = getStripeInstance();
+    
     // Check if Stripe is properly configured
-    if (!process.env.STRIPE_SECRET_KEY) {
+    if (!stripe) {
       console.warn('Stripe secret key not configured, returning mock data for development');
       
       return NextResponse.json({

@@ -1,9 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2025-08-27.basil',
-});
+// Initialize Stripe only if secret key is available and not a placeholder
+const getStripeInstance = () => {
+  const secretKey = process.env.STRIPE_SECRET_KEY;
+  if (!secretKey || secretKey === 'sk_test_placeholder' || secretKey.length < 10) {
+    return null;
+  }
+  return new Stripe(secretKey, {
+    apiVersion: '2025-08-27.basil',
+  });
+};
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
@@ -11,10 +18,13 @@ export async function POST(request: NextRequest) {
   const body = await request.text();
   const signature = request.headers.get('stripe-signature');
 
-  if (!signature || !endpointSecret) {
-    console.error('Missing Stripe signature or webhook secret');
+  // Get Stripe instance
+  const stripe = getStripeInstance();
+
+  if (!signature || !endpointSecret || !stripe) {
+    console.error('Missing Stripe signature, webhook secret, or Stripe not configured');
     return NextResponse.json(
-      { error: 'Missing signature or webhook secret' },
+      { error: 'Webhook not properly configured' },
       { status: 400 }
     );
   }
