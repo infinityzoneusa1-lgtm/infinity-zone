@@ -6,12 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Star, Search } from "lucide-react";
 import { products } from "@/data/products";
+import { useCart } from "@/contexts/cart-context";
 
 export function ProductSection() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const [cart, setCart] = useState<number[]>([]);
   const router = useRouter();
+  const { addToCart, isInCart } = useCart();
 
   const pageSize = 8;
   const filteredProducts = products.filter((product) =>
@@ -24,7 +25,15 @@ export function ProductSection() {
   );
 
   const handleAddToCart = (id: number) => {
-    setCart((prev) => (prev.includes(id) ? prev : [...prev, id]));
+    const product = products.find((p) => p.id === id);
+    if (product) {
+      addToCart({
+        id: product.id,
+        title: product.title,
+        price: product.price,
+        image: product.image,
+      });
+    }
   };
 
   const handleProductClick = (id: number) => {
@@ -111,9 +120,7 @@ export function ProductSection() {
               <div className="flex items-center w-full mt-auto mb-2 sm:mb-3 justify-between gap-2 px-2 sm:px-3 pb-2 sm:pb-3">
                 <Button
                   className={`bg-primary hover:bg-primary/90 text-white rounded-full flex items-center justify-center gap-1.5 sm:gap-2 py-1.5 sm:py-2 px-4 sm:px-6 text-xs sm:text-sm font-semibold whitespace-nowrap ${
-                    cart.includes(product.id)
-                      ? "opacity-60 pointer-events-none"
-                      : ""
+                    isInCart(product.id) ? "opacity-60 pointer-events-none" : ""
                   }`}
                   onClick={(e) => {
                     e.stopPropagation();
@@ -121,7 +128,7 @@ export function ProductSection() {
                   }}
                 >
                   <ShoppingCart className="w-3 h-3 sm:w-4 sm:h-4" />
-                  {cart.includes(product.id) ? "Added" : "Add To Cart"}
+                  {isInCart(product.id) ? "Added" : "Add To Cart"}
                 </Button>
                 <span className="font-bold text-sm sm:text-base md:text-lg text-gray-900">
                   ${product.price}

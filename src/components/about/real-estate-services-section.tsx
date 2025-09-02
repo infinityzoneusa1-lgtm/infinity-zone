@@ -1,4 +1,5 @@
 import { Button } from "../ui/button";
+import Link from "next/link";
 
 export function RealEstateServicesSection() {
   return (
@@ -19,13 +20,15 @@ export function RealEstateServicesSection() {
             Zone, you can unlock the potential of real estate and build wealth
             over time.
           </p>
-          <Button
-            variant="default"
-            size="lg"
-            className="text-lg px-8 py-3 bg-red-800 rounded-full"
-          >
-            Learn More
-          </Button>
+          <Link href="/services">
+            <Button
+              variant="default"
+              size="lg"
+              className="text-lg px-8 py-3 bg-red-800 rounded-full"
+            >
+              Learn More
+            </Button>
+          </Link>
         </div>
         <div className="relative">
           <div className="rounded-2xl overflow-hidden  ">

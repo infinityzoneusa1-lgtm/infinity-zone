@@ -52,13 +52,13 @@ export function ProductShowcase() {
               support stress response. No added sugar, preservatives or
               artificial colors
             </p>
-            <Button
+            {/* <Button
               size="lg"
               className="bg-white text-black hover:bg-gray-200 rounded-full"
               onClick={handleShopNow}
             >
               Shop Now
-            </Button>
+            </Button> */}
           </div>
         </div>
       </div>

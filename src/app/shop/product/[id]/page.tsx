@@ -7,6 +7,7 @@ import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { Star, ShoppingCart, Minus, Plus } from "lucide-react";
 import { products } from "@/data/products";
+import { useCart } from "@/contexts/cart-context";
 
 export default function ProductDetail() {
   const params = useParams();
@@ -15,6 +16,7 @@ export default function ProductDetail() {
   const [selectedCapacity, setSelectedCapacity] = useState("20L");
   const [selectedColor, setSelectedColor] = useState("Beige");
   const [mainImage, setMainImage] = useState(0);
+  const { addToCart, isInCart } = useCart();
 
   const productId = parseInt(params.id as string);
   const product = products.find((p) => p.id === productId);
@@ -26,13 +28,17 @@ export default function ProductDetail() {
   }
 
   const handleAddToCart = () => {
-    // Add to cart logic here
-    console.log("Added to cart:", {
-      product,
-      quantity,
-      selectedCapacity,
-      selectedColor,
-    });
+    if (product) {
+      addToCart({
+        id: product.id,
+        title: product.title,
+        price: product.price,
+        image: product.image,
+        quantity: quantity,
+        selectedCapacity,
+        selectedColor,
+      });
+    }
   };
 
   const increaseQuantity = () => setQuantity((prev) => prev + 1);
@@ -189,10 +195,14 @@ export default function ProductDetail() {
 
                 <Button
                   onClick={handleAddToCart}
-                  className="flex-1 bg-primary hover:bg-primary/90 text-white py-3 px-6 rounded-full font-semibold flex items-center justify-center gap-2"
+                  className={`flex-1 py-3 px-6 rounded-full font-semibold flex items-center justify-center gap-2 ${
+                    isInCart(product.id)
+                      ? "bg-green-600 hover:bg-green-700 text-white"
+                      : "bg-primary hover:bg-primary/90 text-white"
+                  }`}
                 >
                   <ShoppingCart className="w-5 h-5" />
-                  Add To Cart
+                  {isInCart(product.id) ? "Added to Cart" : "Add To Cart"}
                 </Button>
               </div>
             </div>

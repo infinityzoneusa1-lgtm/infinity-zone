@@ -1,4 +1,5 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export function WelcomeSection() {
   return (
@@ -14,29 +15,43 @@ export function WelcomeSection() {
             Limitless!
           </h2>
           <p className="text-sm md:text-base leading-relaxed text-gray-200">
-            We are not just another e-commerce platform; we are a dynamic ecosystem that empowers visionary entrepreneurs to turn their ideas into prosperous ventures. Our mission is to provide a haven for dreamers, innovators, and change makers like you, offering a wide range of opportunities across multiple lines of business.
+            We are not just another e-commerce platform; we are a dynamic
+            ecosystem that empowers visionary entrepreneurs to turn their ideas
+            into prosperous ventures. Our mission is to provide a haven for
+            dreamers, innovators, and change makers like you, offering a wide
+            range of opportunities across multiple lines of business.
           </p>
         </div>
-        
+
         {/* Column 2: Buttons */}
         <div className="flex flex-col space-y-2 items-center">
-          <Button className="bg-red-800 hover:bg-red-700 text-white px-6 py-3 text-sm font-semibold rounded-full w-[200px] transition-all duration-200 shadow-lg">
-            OUR TEAM
-          </Button>
-          <Button className="bg-red-800 hover:bg-red-700 text-white px-6 py-3 text-sm font-semibold rounded-full w-[200px] transition-all duration-200 shadow-lg">
-            AFFILIATES
-          </Button>
-          <Button className="bg-red-800 hover:bg-red-700 text-white px-6 py-3 text-sm font-semibold rounded-full w-[200px] transition-all duration-200 shadow-lg">
-            FARMERS
-          </Button>
-          <Button className="bg-red-800 hover:bg-red-700 text-white px-6 py-3 text-sm font-semibold rounded-full w-[200px] transition-all duration-200 shadow-lg">
-            DRIVERS
-          </Button>
-          <Button className="bg-red-800 hover:bg-red-700 text-white px-6 py-3 text-sm font-semibold rounded-full w-[200px] transition-all duration-200 shadow-lg">
-            COMMUNITY MEMBERS
-          </Button>
+          <Link href="/#professionals">
+            <Button className="bg-red-800 hover:bg-red-700 text-white px-6 py-3 text-sm font-semibold rounded-full w-[200px] transition-all duration-200 shadow-lg">
+              OUR TEAM
+            </Button>
+          </Link>
+          <Link href="/affiliates">
+            <Button className="bg-red-800 hover:bg-red-700 text-white px-6 py-3 text-sm font-semibold rounded-full w-[200px] transition-all duration-200 shadow-lg">
+              AFFILIATES
+            </Button>
+          </Link>
+          <Link href="/coming-soon">
+            <Button className="bg-red-800 hover:bg-red-700 text-white px-6 py-3 text-sm font-semibold rounded-full w-[200px] transition-all duration-200 shadow-lg">
+              FARMERS
+            </Button>
+          </Link>
+          <Link href="/coming-soon">
+            <Button className="bg-red-800 hover:bg-red-700 text-white px-6 py-3 text-sm font-semibold rounded-full w-[200px] transition-all duration-200 shadow-lg">
+              DRIVERS
+            </Button>
+          </Link>
+          <Link href="/contact">
+            <Button className="bg-red-800 hover:bg-red-700 text-white px-6 py-3 text-sm font-semibold rounded-full w-[200px] transition-all duration-200 shadow-lg">
+              COMMUNITY MEMBERS
+            </Button>
+          </Link>
         </div>
-        
+
         {/* Column 3: Image */}
         <div className="relative">
           <div className="rounded-4xl overflow-hidden shadow-2xl">
@@ -49,5 +64,5 @@ export function WelcomeSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }

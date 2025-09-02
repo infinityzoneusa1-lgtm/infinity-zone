@@ -23,7 +23,7 @@ export function ServicesSection() {
       image: "/Container-2.png",
       label: "DRIVER",
       labelColor: "bg-primary",
-      link: "/coming-soon",
+      link: "https://api.leadconnectorhq.com/widget/survey/TzGAXvmg6nRJCyvkzG8S",
     },
     {
       title: "Investors' Page",

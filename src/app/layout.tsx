@@ -1,24 +1,25 @@
-import type { Metadata } from 'next'
-import { GeistSans } from 'geist/font/sans'
-import { GeistMono } from 'geist/font/mono'
-import './globals.css'
+import type { Metadata } from "next";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
+import "./globals.css";
+import { CartProvider } from "@/contexts/cart-context";
 
 export const metadata: Metadata = {
-  title: 'Infinity Zone',
-  description: 'Your ultimate beauty and lifestyle destination',
-  generator: 'v0.app',
-}
+  title: "Infinity Zone",
+  description: "Your ultimate beauty and lifestyle destination",
+  generator: "v0.app",
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
       <body className="font-sans antialiased" suppressHydrationWarning={true}>
-        {children}
+        <CartProvider>{children}</CartProvider>
       </body>
     </html>
-  )
+  );
 }

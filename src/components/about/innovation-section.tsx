@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export function InnovationSection() {
   return (
@@ -27,13 +28,15 @@ export function InnovationSection() {
             providing you with the guidance and resources you need to navigate
             the entrepreneurial journey successfully.
           </p>
-          <Button
-            variant="default"
-            size="lg"
-            className="text-lg px-8 py-3 rounded-full"
-          >
-            Learn More
-          </Button>
+          <Link href="/contact">
+            <Button
+              variant="default"
+              size="lg"
+              className="text-lg px-8 py-3 rounded-full"
+            >
+              Learn More
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

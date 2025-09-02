@@ -1,4 +1,5 @@
 import { Button } from "../ui/button";
+import Link from "next/link";
 
 export function CustomerBenefitsSection() {
   return (
@@ -49,13 +50,19 @@ export function CustomerBenefitsSection() {
             Click the &quot;Apply now&quot; button and our team will guide you
             every step of the way. <br />
           </p>
-          <Button
-            variant="default"
-            size="lg"
-            className="text-lg px-8 py-3 bg-primary rounded-full"
+          <Link
+            href="https://link.apisystem.tech/widget/survey/60Q4OqGy51t7sGU6U24M"
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            Apply Now
-          </Button>
+            <Button
+              variant="default"
+              size="lg"
+              className="text-lg px-8 py-3 bg-primary rounded-full"
+            >
+              Apply Now
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

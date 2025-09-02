@@ -1,15 +1,54 @@
 "use client";
 
-import { Search, Phone, Menu, X, ShoppingCart } from "lucide-react";
+import {
+  Search,
+  Phone,
+  Menu,
+  X,
+  ShoppingCart,
+  Minus,
+  Plus,
+  Trash2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useCart } from "@/contexts/cart-context";
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileServicesOpen, setIsMobileServicesOpen] = useState(false);
+  const [isCartDropdownOpen, setIsCartDropdownOpen] = useState(false);
+  const {
+    cartItems,
+    getTotalItems,
+    getTotalPrice,
+    updateQuantity,
+    removeFromCart,
+  } = useCart();
+  const cartDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close cart dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        cartDropdownRef.current &&
+        !cartDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsCartDropdownOpen(false);
+      }
+    }
+
+    if (isCartDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isCartDropdownOpen]);
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
@@ -115,14 +154,107 @@ export function Header() {
 
           {/* Right side */}
           <div className="flex items-center space-x-2 md:space-x-4">
-            {/* Cart Icon - Desktop */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="hidden md:inline-flex p-2"
-            >
-              <ShoppingCart className="w-5 h-5 text-gray-700" />
-            </Button>
+            {/* Cart Icon with Dropdown - Desktop */}
+            <div className="relative hidden md:block" ref={cartDropdownRef}>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="p-2 relative"
+                onClick={() => setIsCartDropdownOpen(!isCartDropdownOpen)}
+              >
+                <ShoppingCart className="w-5 h-5 text-gray-700" />
+                {getTotalItems() > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {getTotalItems()}
+                  </span>
+                )}
+              </Button>
+
+              {/* Cart Dropdown */}
+              {isCartDropdownOpen && (
+                <div className="absolute right-0 top-full mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                  <div className="p-4">
+                    <h3 className="font-semibold text-gray-900 mb-3">
+                      Shopping Cart
+                    </h3>
+
+                    {cartItems.length === 0 ? (
+                      <p className="text-gray-500 text-center py-4">
+                        No items in cart
+                      </p>
+                    ) : (
+                      <>
+                        <div className="max-h-60 overflow-y-auto space-y-3">
+                          {cartItems.map((item) => (
+                            <div
+                              key={item.id}
+                              className="flex items-center space-x-3 p-2 border border-gray-100 rounded"
+                            >
+                              <img
+                                src={item.image}
+                                alt={item.title}
+                                className="w-12 h-12 object-cover rounded"
+                              />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium text-gray-900 truncate">
+                                  {item.title}
+                                </p>
+                                <p className="text-sm text-gray-500">
+                                  ${item.price}
+                                </p>
+                              </div>
+                              <div className="flex items-center space-x-1">
+                                <button
+                                  onClick={() =>
+                                    updateQuantity(item.id, item.quantity - 1)
+                                  }
+                                  className="p-1 hover:bg-gray-100 rounded"
+                                >
+                                  <Minus className="w-3 h-3" />
+                                </button>
+                                <span className="text-sm w-8 text-center">
+                                  {item.quantity}
+                                </span>
+                                <button
+                                  onClick={() =>
+                                    updateQuantity(item.id, item.quantity + 1)
+                                  }
+                                  className="p-1 hover:bg-gray-100 rounded"
+                                >
+                                  <Plus className="w-3 h-3" />
+                                </button>
+                                <button
+                                  onClick={() => removeFromCart(item.id)}
+                                  className="p-1 hover:bg-gray-100 rounded text-red-600 ml-2"
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="border-t border-gray-200 mt-3 pt-3">
+                          <div className="flex justify-between items-center mb-3">
+                            <span className="font-semibold">
+                              Total: ${getTotalPrice().toFixed(2)}
+                            </span>
+                          </div>
+                          <Link href="/checkout">
+                            <Button
+                              className="w-full bg-primary hover:bg-primary/90 text-white"
+                              onClick={() => setIsCartDropdownOpen(false)}
+                            >
+                              Pay Now
+                            </Button>
+                          </Link>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
             {/* Search - Desktop/Tablet */}
             {/**
             <div className="hidden md:flex items-center relative">
@@ -151,13 +283,19 @@ export function Header() {
               <Search className="w-5 h-5 text-gray-700" />
             </Button>
             */}
-            <Link href={"/cart"}>
+            {/* Cart Icon - Mobile */}
+            <Link href={"/checkout"}>
               <Button
                 variant="ghost"
                 size="icon"
-                className="md:hidden bg-primary p-2"
+                className="md:hidden bg-primary p-2 relative"
               >
-                <ShoppingCart className="w-5 h-5 text-gray-700 " />
+                <ShoppingCart className="w-5 h-5 text-white" />
+                {getTotalItems() > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                    {getTotalItems()}
+                  </span>
+                )}
               </Button>
             </Link>
             {/* Call info - Desktop only */}

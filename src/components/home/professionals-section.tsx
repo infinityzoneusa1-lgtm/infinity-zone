@@ -15,15 +15,23 @@ export function ProfessionalsSection() {
       productId: 15, // Professional Beauty Consultant
     },
     {
-      name: "Fatoumata Dibba",
-      title: "Business Development Consultant",
-      image: "/professional.png",
+      name: "Blessing Essien",
+      title: "Executive Support Corporate",
+      image: "/professional-2.png",
       productId: 16, // Professional Skincare Specialist
     },
   ];
 
   const handleGetConnected = (productId: number) => {
-    router.push(`/contact`);
+    if (productId === 15) {
+      // Fatoumata Dibba
+      router.push(`/fatoumata-dibba`);
+    } else if (productId === 16) {
+      // Blessing Essien
+      router.push(`/blessing-essien`);
+    } else {
+      router.push(`/contact`);
+    }
   };
 
   return (

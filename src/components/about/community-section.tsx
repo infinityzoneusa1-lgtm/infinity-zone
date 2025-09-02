@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export function CommunitySection() {
   return (
@@ -28,13 +29,15 @@ export function CommunitySection() {
             unlock the entrepreneurial opportunities that await you. Welcome to
             Infinity Zone.
           </p>
-          <Button
-            variant="default"
-            size="lg"
-            className="text-lg px-8 py-3 rounded-full"
-          >
-            Learn More
-          </Button>
+          <Link href="/contact">
+            <Button
+              variant="default"
+              size="lg"
+              className="text-lg px-8 py-3 rounded-full"
+            >
+              Join Now
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

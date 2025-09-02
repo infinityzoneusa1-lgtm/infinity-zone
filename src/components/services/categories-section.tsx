@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export function CategoriesSection() {
   return (
@@ -32,13 +33,19 @@ export function CategoriesSection() {
             note that the market value of the property can be affected by
             location (management fee applies).
           </p>
-          <Button
-            variant="default"
-            size="lg"
-            className="text-lg px-8 py-3 rounded-full"
+          <Link
+            href="https://link.apisystem.tech/widget/survey/60Q4OqGy51t7sGU6U24M"
+            target="_blank"
+            rel="noopener noreferrer"
           >
-            Apply Now{" "}
-          </Button>
+            <Button
+              variant="default"
+              size="lg"
+              className="text-lg px-8 py-3 rounded-full"
+            >
+              Apply Now{" "}
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

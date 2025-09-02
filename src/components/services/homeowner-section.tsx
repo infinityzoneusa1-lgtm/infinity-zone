@@ -23,13 +23,13 @@ export function HomeownerSection() {
             will carry out the necessary procedures and paperwork to ensure you
             find the best location and help you close the property.{" "}
           </p>
-          <Button
+          {/* <Button
             variant="default"
             size="lg"
             className="text-lg px-8 py-3 rounded-full"
           >
             Apply Now{" "}
-          </Button>
+          </Button> */}
         </div>
       </div>
     </section>

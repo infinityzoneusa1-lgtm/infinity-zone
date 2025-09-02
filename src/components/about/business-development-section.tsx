@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export function BusinessDevelopmentSection() {
   return (
@@ -25,13 +26,15 @@ export function BusinessDevelopmentSection() {
             clients are just a click away. Sign up now and unleash your online
             potential with Infinity Zone.
           </p>
-          <Button
-            variant="default"
-            size="lg"
-            className="text-lg px-8 py-3 rounded-full"
-          >
-            Learn More
-          </Button>
+          <Link href="/vendor-app">
+            <Button
+              variant="default"
+              size="lg"
+              className="text-lg px-8 py-3 rounded-full"
+            >
+              Learn More
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

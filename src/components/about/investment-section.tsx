@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export function InvestmentSection() {
   return (
@@ -27,13 +28,15 @@ export function InvestmentSection() {
             Together, we can build a better tomorrow for communities and create
             a positive ripple effect across the continent.
           </p>
-          <Button
-            variant="default"
-            size="lg"
-            className="text-lg px-8 py-3 rounded-full"
-          >
-            Learn More
-          </Button>
+          <Link href="/coming-soon">
+            <Button
+              variant="default"
+              size="lg"
+              className="text-lg px-8 py-3 rounded-full"
+            >
+              Learn More
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

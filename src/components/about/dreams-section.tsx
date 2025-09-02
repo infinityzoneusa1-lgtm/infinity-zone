@@ -1,4 +1,5 @@
 import { Button } from "../ui/button";
+import Link from "next/link";
 
 export function DreamsSection() {
   return (
@@ -19,13 +20,15 @@ export function DreamsSection() {
             industry, empowering you to build a successful and profitable
             trucking business.{" "}
           </p>
-          <Button
-            variant="default"
-            size="lg"
-            className="text-lg px-8 py-3 bg-red-800 rounded-full"
-          >
-            Learn More
-          </Button>
+          <Link href="/coming-soon">
+            <Button
+              variant="default"
+              size="lg"
+              className="text-lg px-8 py-3 bg-red-800 rounded-full"
+            >
+              Learn More
+            </Button>
+          </Link>
         </div>
         <div className="relative">
           <div className="rounded-2xl overflow-hidden  ">
