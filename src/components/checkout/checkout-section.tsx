@@ -15,7 +15,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useCart } from "@/contexts/cart-context";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { X, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+import { X, CheckCircle, AlertCircle } from "lucide-react";
 import { StripeCheckout } from "./stripe-checkout";
 
 export function CheckoutSection() {
@@ -376,7 +376,10 @@ export function CheckoutSection() {
                 amount={total}
                 orderDetails={{
                   customer: formData,
-                  items: cartItems,
+                  items: cartItems.map(item => ({
+                    ...item,
+                    id: item.id.toString()
+                  })),
                   subtotal,
                   shipping,
                   tax,

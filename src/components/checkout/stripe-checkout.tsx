@@ -1,71 +1,95 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from 'react';
 import {
   Elements,
   PaymentElement,
   useStripe,
-  useElements,
-} from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
-import { Button } from "@/components/ui/button";
-import { Loader2, CheckCircle, AlertCircle } from "lucide-react";
+  useElements
+} from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import { Button } from '@/components/ui/button';
+import { Loader2 } from 'lucide-react';
 
 // Load Stripe outside of component to avoid re-creating on every render
-const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || ""
-);
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
+
+interface OrderDetails {
+  customer: {
+    fullName: string;
+    email: string;
+    phone: string;
+    country: string;
+    city: string;
+    zipcode: string;
+    agreeToTerms: boolean;
+  };
+  items: Array<{
+    id: string;
+    title: string;
+    price: number;
+    quantity: number;
+    image: string;
+    selectedCapacity?: string;
+    selectedColor?: string;
+  }>;
+  subtotal: number;
+  shipping: number;
+  tax: number;
+  total: number;
+  timestamp: string;
+}
 
 interface StripeCheckoutProps {
   amount: number;
-  orderDetails: any;
+  orderDetails: OrderDetails;
   onSuccess: () => void;
   onFailure: (error: string) => void;
 }
 
-function CheckoutForm({
-  amount,
-  orderDetails,
-  onSuccess,
-  onFailure,
+function CheckoutForm({ 
+  amount, 
+  orderDetails, 
+  onSuccess, 
+  onFailure 
 }: StripeCheckoutProps) {
   const stripe = useStripe();
   const elements = useElements();
-
+  
   const [isLoading, setIsLoading] = useState(false);
-  const [clientSecret, setClientSecret] = useState("");
+  const [clientSecret, setClientSecret] = useState('');
 
-  useEffect(() => {
-    // Create payment intent when component mounts
-    createPaymentIntent();
-  }, []);
-
-  const createPaymentIntent = async () => {
+  const createPaymentIntent = useCallback(async () => {
     try {
-      const response = await fetch("/api/create-payment-intent", {
-        method: "POST",
+      const response = await fetch('/api/create-payment-intent', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           amount: amount * 100, // Convert to cents
-          currency: "usd",
+          currency: 'usd',
           orderDetails,
         }),
       });
 
       const data = await response.json();
-
+      
       if (data.error) {
         throw new Error(data.error);
       }
 
       setClientSecret(data.clientSecret);
-    } catch (error: any) {
-      console.error("Error creating payment intent:", error);
-      onFailure(error.message || "Failed to initialize payment");
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to initialize payment';
+      console.error('Error creating payment intent:', error);
+      onFailure(errorMessage);
     }
-  };
+  }, [amount, orderDetails, onFailure]);
+
+  useEffect(() => {
+    createPaymentIntent();
+  }, [createPaymentIntent]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -82,32 +106,20 @@ function CheckoutForm({
         confirmParams: {
           return_url: `${window.location.origin}/payment-success`,
         },
-        redirect: "if_required",
+        redirect: 'if_required',
       });
 
       if (error) {
-        onFailure(error.message || "Payment failed");
-      } else if (paymentIntent && paymentIntent.status === "succeeded") {
+        onFailure(error.message || 'Payment failed');
+      } else if (paymentIntent && paymentIntent.status === 'succeeded') {
         onSuccess();
       }
-    } catch (error: any) {
-      onFailure(error.message || "Payment processing failed");
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Payment processing failed';
+      onFailure(errorMessage);
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const appearance = {
-    theme: "stripe" as const,
-    variables: {
-      colorPrimary: "#dc2626",
-      colorBackground: "#ffffff",
-      colorText: "#374151",
-      colorDanger: "#ef4444",
-      fontFamily: "Inter, system-ui, sans-serif",
-      spacingUnit: "4px",
-      borderRadius: "8px",
-    },
   };
 
   if (!clientSecret) {
@@ -121,12 +133,12 @@ function CheckoutForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <PaymentElement
+      <PaymentElement 
         options={{
-          layout: "tabs",
+          layout: 'tabs',
         }}
       />
-
+      
       <Button
         type="submit"
         disabled={!stripe || !elements || isLoading}
@@ -145,18 +157,18 @@ function CheckoutForm({
   );
 }
 
-export function StripeCheckout({
-  amount,
-  orderDetails,
-  onSuccess,
-  onFailure,
+export function StripeCheckout({ 
+  amount, 
+  orderDetails, 
+  onSuccess, 
+  onFailure 
 }: StripeCheckoutProps) {
   const options = {
-    mode: "payment" as const,
+    mode: 'payment' as const,
     amount: amount * 100,
-    currency: "usd",
+    currency: 'usd',
     appearance: {
-      theme: "stripe" as const,
+      theme: 'stripe' as const,
     },
   };
 

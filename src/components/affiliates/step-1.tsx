@@ -7,7 +7,7 @@ export function Step1Section() {
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-black mb-4">
             How To Make Money With Infinity Zone Affiliate Program
           </h1>
-          <p className="text-4xl md:text-5xl lg:text-2xl font-bold text-black mb-4">
+          <p className="text-lg md:text-xl text-gray-600 font-medium">
             4 Easy Steps
           </p>
         </div>
@@ -32,7 +32,7 @@ export function Step1Section() {
               Step 01
             </h2>
             <h2 className="text-3xl font-bold mb-6 text-balance text-black">
-              Join Infinity Zone's Affiliate Program
+              Join Infinity Zone&apos;s Affiliate Program
             </h2>
             <p className="text-md leading-relaxed mb-6 text-black">
               Sign up and gain access to your exclusive affiliate account. Get

@@ -22,7 +22,7 @@ export function Step4Section() {
             Earn commission on every sale{" "}
           </h2>
           <p className="text-md leading-relaxed mb-6 text-black">
-            Get paid a 10% commission on every sale you bring. Here's how it
+            Get paid a 10% commission on every sale you bring. Here&apos;s how it
             works:
             <br />
             If you select the Shop as your promoting category, you will earn

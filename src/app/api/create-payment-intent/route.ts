@@ -51,13 +51,15 @@ export async function POST(request: NextRequest) {
       status: paymentIntent.status,
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Stripe payment intent creation error:', error);
+    
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
     
     return NextResponse.json(
       { 
         error: 'Failed to create payment intent',
-        details: error.message 
+        details: errorMessage 
       },
       { status: 500 }
     );
