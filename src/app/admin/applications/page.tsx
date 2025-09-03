@@ -2,15 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import {
-  FiFileText,
-  FiUser,
-  FiMail,
-  FiCalendar,
-  FiEye,
-  FiCheck,
-  FiX,
-} from "react-icons/fi";
+import { FiUser, FiMail, FiCalendar } from "react-icons/fi";
 
 interface Application {
   _id: string;
@@ -44,8 +36,6 @@ export default function AdminApplications() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
-  const [selectedApp, setSelectedApp] = useState<Application | null>(null);
-  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     fetchApplications();
@@ -86,44 +76,8 @@ export default function AdminApplications() {
     }
   };
 
-  const updateApplicationStatus = async (
-    id: string,
-    type: string,
-    status: string
-  ) => {
-    try {
-      const endpoint =
-        type === "vendor"
-          ? "vendors"
-          : type === "blogger"
-          ? "bloggers"
-          : "content-creators";
-
-      const response = await fetch(
-        `http://localhost:5000/api/${endpoint}/${id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ status }),
-        }
-      );
-
-      if (response.ok) {
-        fetchApplications();
-        setShowModal(false);
-      }
-    } catch (error) {
-      console.error("Error updating application:", error);
-    }
-  };
-
   const filteredApplications = applications.filter((app) => {
     if (filter === "all") return true;
-    if (filter === "pending") return app.status === "pending";
-    if (filter === "approved") return app.status === "approved";
-    if (filter === "rejected") return app.status === "rejected";
     return app.type === filter;
   });
 
@@ -176,14 +130,6 @@ export default function AdminApplications() {
                 Applications Management
               </h1>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="bg-yellow-50 px-4 py-2 rounded-md">
-                <span className="text-yellow-800 font-medium">
-                  Pending:{" "}
-                  {applications.filter((a) => a.status === "pending").length}
-                </span>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -192,32 +138,26 @@ export default function AdminApplications() {
         {/* Filters */}
         <div className="bg-white rounded-lg shadow mb-6 p-6">
           <div className="flex flex-wrap gap-2">
-            {[
-              "all",
-              "pending",
-              "approved",
-              "rejected",
-              "vendor",
-              "blogger",
-              "contentCreator",
-            ].map((filterOption) => (
-              <button
-                key={filterOption}
-                onClick={() => setFilter(filterOption)}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                  filter === filterOption
-                    ? "bg-purple-600 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                {filterOption === "all"
-                  ? "All Applications"
-                  : filterOption === "contentCreator"
-                  ? "Content Creators"
-                  : filterOption.charAt(0).toUpperCase() +
-                    filterOption.slice(1)}
-              </button>
-            ))}
+            {["all", "vendor", "blogger", "contentCreator"].map(
+              (filterOption) => (
+                <button
+                  key={filterOption}
+                  onClick={() => setFilter(filterOption)}
+                  className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                    filter === filterOption
+                      ? "bg-purple-600 text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  {filterOption === "all"
+                    ? "All Applications"
+                    : filterOption === "contentCreator"
+                    ? "Content Creators"
+                    : filterOption.charAt(0).toUpperCase() +
+                      filterOption.slice(1)}
+                </button>
+              )
+            )}
           </div>
         </div>
 
@@ -234,13 +174,7 @@ export default function AdminApplications() {
                     Type
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Applied
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
                   </th>
                 </tr>
               </thead>
@@ -283,64 +217,10 @@ export default function AdminApplications() {
                               app.type.slice(1)}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
-                            app.status
-                          )}`}
-                        >
-                          {app.status.charAt(0).toUpperCase() +
-                            app.status.slice(1)}
-                        </span>
-                      </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <div className="flex items-center">
                           <FiCalendar className="mr-1 h-3 w-3" />
                           {new Date(app.createdAt).toLocaleDateString()}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div className="flex space-x-2">
-                          <button
-                            onClick={() => {
-                              setSelectedApp(app);
-                              setShowModal(true);
-                            }}
-                            className="text-purple-600 hover:text-purple-900 p-1"
-                            title="View Details"
-                          >
-                            <FiEye />
-                          </button>
-                          {app.status === "pending" && (
-                            <>
-                              <button
-                                onClick={() =>
-                                  updateApplicationStatus(
-                                    app._id,
-                                    app.type,
-                                    "approved"
-                                  )
-                                }
-                                className="text-green-600 hover:text-green-900 p-1"
-                                title="Approve"
-                              >
-                                <FiCheck />
-                              </button>
-                              <button
-                                onClick={() =>
-                                  updateApplicationStatus(
-                                    app._id,
-                                    app.type,
-                                    "rejected"
-                                  )
-                                }
-                                className="text-red-600 hover:text-red-900 p-1"
-                                title="Reject"
-                              >
-                                <FiX />
-                              </button>
-                            </>
-                          )}
                         </div>
                       </td>
                     </tr>
@@ -348,7 +228,7 @@ export default function AdminApplications() {
                 ) : (
                   <tr>
                     <td
-                      colSpan={5}
+                      colSpan={3}
                       className="px-6 py-12 text-center text-gray-500"
                     >
                       No applications found for the selected filter
@@ -359,201 +239,7 @@ export default function AdminApplications() {
             </table>
           </div>
         </div>
-
-        {/* Summary Cards */}
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center">
-              <FiFileText className="h-8 w-8 text-blue-600" />
-              <div className="ml-4">
-                <h3 className="text-lg font-medium text-gray-900">Total</h3>
-                <p className="text-2xl font-bold text-blue-600">
-                  {applications.length}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center">
-              <div className="h-8 w-8 rounded-full bg-yellow-100 flex items-center justify-center">
-                <div className="h-3 w-3 rounded-full bg-yellow-600"></div>
-              </div>
-              <div className="ml-4">
-                <h3 className="text-lg font-medium text-gray-900">Pending</h3>
-                <p className="text-2xl font-bold text-yellow-600">
-                  {applications.filter((a) => a.status === "pending").length}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center">
-              <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
-                <FiCheck className="h-4 w-4 text-green-600" />
-              </div>
-              <div className="ml-4">
-                <h3 className="text-lg font-medium text-gray-900">Approved</h3>
-                <p className="text-2xl font-bold text-green-600">
-                  {applications.filter((a) => a.status === "approved").length}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center">
-              <div className="h-8 w-8 rounded-full bg-red-100 flex items-center justify-center">
-                <FiX className="h-4 w-4 text-red-600" />
-              </div>
-              <div className="ml-4">
-                <h3 className="text-lg font-medium text-gray-900">Rejected</h3>
-                <p className="text-2xl font-bold text-red-600">
-                  {applications.filter((a) => a.status === "rejected").length}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
-
-      {/* Application Details Modal */}
-      {showModal && selectedApp && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-20 mx-auto p-5 border w-11/12 max-w-2xl shadow-lg rounded-md bg-white">
-            <div className="mt-3">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-medium text-gray-900">
-                  Application Details
-                </h3>
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="text-gray-400 hover:text-gray-600"
-                >
-                  <FiX className="h-5 w-5" />
-                </button>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    Name
-                  </label>
-                  <p className="text-gray-900">{selectedApp.name}</p>
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    Email
-                  </label>
-                  <p className="text-gray-900">{selectedApp.email}</p>
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    Type
-                  </label>
-                  <p className="text-gray-900">
-                    {selectedApp.type === "contentCreator"
-                      ? "Content Creator"
-                      : selectedApp.type.charAt(0).toUpperCase() +
-                        selectedApp.type.slice(1)}
-                  </p>
-                </div>
-
-                {selectedApp.businessName && (
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">
-                      Business Name
-                    </label>
-                    <p className="text-gray-900">{selectedApp.businessName}</p>
-                  </div>
-                )}
-
-                {selectedApp.website && (
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">
-                      Website
-                    </label>
-                    <p className="text-gray-900">{selectedApp.website}</p>
-                  </div>
-                )}
-
-                {selectedApp.socialMedia && (
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">
-                      Social Media
-                    </label>
-                    <p className="text-gray-900">{selectedApp.socialMedia}</p>
-                  </div>
-                )}
-
-                {selectedApp.experience && (
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">
-                      Experience
-                    </label>
-                    <p className="text-gray-900">{selectedApp.experience}</p>
-                  </div>
-                )}
-
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    Status
-                  </label>
-                  <span
-                    className={`ml-2 px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(
-                      selectedApp.status
-                    )}`}
-                  >
-                    {selectedApp.status.charAt(0).toUpperCase() +
-                      selectedApp.status.slice(1)}
-                  </span>
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    Applied Date
-                  </label>
-                  <p className="text-gray-900">
-                    {new Date(selectedApp.createdAt).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-
-              {selectedApp.status === "pending" && (
-                <div className="flex justify-end space-x-4 mt-6 pt-4 border-t">
-                  <button
-                    onClick={() =>
-                      updateApplicationStatus(
-                        selectedApp._id,
-                        selectedApp.type,
-                        "rejected"
-                      )
-                    }
-                    className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
-                  >
-                    Reject
-                  </button>
-                  <button
-                    onClick={() =>
-                      updateApplicationStatus(
-                        selectedApp._id,
-                        selectedApp.type,
-                        "approved"
-                      )
-                    }
-                    className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
-                  >
-                    Approve
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

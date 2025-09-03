@@ -27,11 +27,21 @@ interface DashboardStats {
 
 interface Product {
   _id: string;
-  name: string;
+  title: string;
   price: number;
-  category: string;
-  stock: number;
-  image: string;
+  category: {
+    _id: string;
+    name: string;
+  };
+  inventory: {
+    stock: number;
+  };
+  images: Array<{
+    url: string;
+    alt: string;
+    isPrimary: boolean;
+  }>;
+  createdAt: string;
 }
 
 export default function AdminDashboard() {
@@ -63,7 +73,7 @@ export default function AdminDashboard() {
         professionalRes,
         internshipRes,
       ] = await Promise.all([
-        fetch("http://localhost:5000/api/products").catch(() => ({
+        fetch("http://localhost:5000/api/products?admin=true").catch(() => ({
           ok: false,
         })),
         fetch("http://localhost:5000/api/orders").catch(() => ({ ok: false })),
@@ -104,6 +114,9 @@ export default function AdminDashboard() {
           ? await internshipRes.json()
           : [];
 
+      // Debug log to check products data
+      console.log("Products API Response:", products);
+
       // Ensure all responses are arrays
       const productsArray = Array.isArray(products) ? products : [];
       const ordersArray = Array.isArray(orders) ? orders : [];
@@ -115,6 +128,8 @@ export default function AdminDashboard() {
         ? professionals
         : [];
       const internshipsArray = Array.isArray(internships) ? internships : [];
+
+      console.log("Products Array Length:", productsArray.length);
 
       setStats({
         products: productsArray.length || 0,
@@ -141,12 +156,29 @@ export default function AdminDashboard() {
   const deleteProduct = async (id: string) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
       try {
-        await fetch(`http://localhost:5000/api/products/${id}`, {
-          method: "DELETE",
-        });
-        fetchDashboardData(); // Refresh data
+        const response = await fetch(
+          `http://localhost:5000/api/products/${id}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response.ok) {
+          alert("Product deleted successfully!");
+          fetchDashboardData(); // Refresh data
+        } else {
+          const error = await response.json();
+          alert(
+            "Failed to delete product: " + (error.message || "Unknown error")
+          );
+        }
       } catch (error) {
         console.error("Error deleting product:", error);
+        alert("Error deleting product. Please try again.");
       }
     }
   };
@@ -308,7 +340,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Recent Products */}
-        <div className="bg-white rounded-lg shadow">
+        <div className="bg-white rounded-lg shadow mb-8">
           <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
             <h2 className="text-lg font-semibold text-gray-900">
               Recent Products
@@ -330,29 +362,35 @@ export default function AdminDashboard() {
                   >
                     <div className="flex items-center space-x-4">
                       <img
-                        src={product.image || "/placeholder.jpg"}
-                        alt={product.name}
+                        src={product.images?.[0]?.url || "/placeholder.jpg"}
+                        alt={product.title}
                         className="w-12 h-12 rounded-lg object-cover"
                       />
                       <div>
                         <h3 className="font-medium text-gray-900">
-                          {product.name}
+                          {product.title}
                         </h3>
                         <p className="text-sm text-gray-600">
-                          ${product.price}
+                          ${product.price} • Stock:{" "}
+                          {product.inventory?.stock || 0}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {product.category?.name || "No Category"}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Link
                         href={`/admin/products/edit/${product._id}`}
-                        className="text-blue-600 hover:text-blue-700"
+                        className="text-blue-600 hover:text-blue-700 p-1"
+                        title="Edit Product"
                       >
                         <FiEdit />
                       </Link>
                       <button
                         onClick={() => deleteProduct(product._id)}
-                        className="text-red-600 hover:text-red-700"
+                        className="text-red-600 hover:text-red-700 p-1"
+                        title="Delete Product"
                       >
                         <FiTrash2 />
                       </button>
@@ -361,9 +399,24 @@ export default function AdminDashboard() {
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500 text-center py-8">
-                No products found
-              </p>
+              <div className="text-center py-8">
+                <FiShoppingBag className="mx-auto h-12 w-12 text-gray-400" />
+                <h3 className="mt-2 text-sm font-medium text-gray-900">
+                  No products found
+                </h3>
+                <p className="mt-1 text-sm text-gray-500">
+                  Get started by adding your first product.
+                </p>
+                <div className="mt-6">
+                  <Link
+                    href="/admin/products/add"
+                    className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700"
+                  >
+                    <FiPlus className="mr-2 h-4 w-4" />
+                    Add Product
+                  </Link>
+                </div>
+              </div>
             )}
           </div>
         </div>

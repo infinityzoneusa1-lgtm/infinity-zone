@@ -6,7 +6,7 @@ import Link from "next/link";
 import { FiArrowLeft } from "react-icons/fi";
 
 interface ProductForm {
-  name: string;
+  title: string;
   description: string;
   price: number;
   category: string;
@@ -22,7 +22,7 @@ export default function EditProduct() {
   const [loading, setLoading] = useState(false);
   const [fetchLoading, setFetchLoading] = useState(true);
   const [formData, setFormData] = useState<ProductForm>({
-    name: "",
+    title: "",
     description: "",
     price: 0,
     category: "",
@@ -53,14 +53,15 @@ export default function EditProduct() {
         `http://localhost:5000/api/products/${productId}`
       );
       if (response.ok) {
-        const product = await response.json();
+        const result = await response.json();
+        const product = result.data || result; // Handle both response formats
         setFormData({
-          name: product.name,
+          title: product.title,
           description: product.description,
           price: product.price,
-          category: product.category,
-          stock: product.stock,
-          image: product.image || "",
+          category: product.category?.name || product.category,
+          stock: product.inventory?.stock || 0,
+          image: product.images?.[0]?.url || "",
         });
       } else {
         alert("Product not found");
@@ -91,21 +92,43 @@ export default function EditProduct() {
     setLoading(true);
 
     try {
+      const updateData = {
+        title: formData.title,
+        description: formData.description,
+        price: formData.price,
+        category: formData.category, // Send category name, backend will handle conversion
+        inventory: {
+          stock: formData.stock,
+        },
+        images: formData.image
+          ? [
+              {
+                url: formData.image,
+                alt: formData.title,
+                isPrimary: true,
+              },
+            ]
+          : [],
+      };
+
       const response = await fetch(
         `http://localhost:5000/api/products/${productId}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(updateData),
         }
       );
 
       if (response.ok) {
+        alert("Product updated successfully!");
         router.push("/admin/products");
       } else {
         const error = await response.json();
+        console.error("Update error:", error);
         alert("Error updating product: " + (error.message || "Unknown error"));
       }
     } catch (error) {
@@ -148,17 +171,17 @@ export default function EditProduct() {
             {/* Product Name */}
             <div>
               <label
-                htmlFor="name"
+                htmlFor="title"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
                 Product Name *
               </label>
               <input
                 type="text"
-                id="name"
-                name="name"
+                id="title"
+                name="title"
                 required
-                value={formData.name}
+                value={formData.title}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500"
                 placeholder="Enter product name"

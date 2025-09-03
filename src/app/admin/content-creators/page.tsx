@@ -204,16 +204,43 @@ export default function AdminContentCreators() {
                         <div className="text-sm text-gray-900">
                           {application.contentFile && (
                             <div className="mb-2">
-                              <span className="text-blue-600 text-xs">
-                                File:{" "}
+                              <span className="inline-flex items-center px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
+                                <FiVideo className="mr-1 h-3 w-3" />
                                 {application.contentFile.originalName ||
-                                  application.contentFile.filename}
+                                  "File Attached"}
                               </span>
+                              <div className="text-xs text-gray-400 mt-1">
+                                {(
+                                  application.contentFile.size /
+                                  1024 /
+                                  1024
+                                ).toFixed(2)}{" "}
+                                MB
+                              </div>
                             </div>
                           )}
-                          <div className="text-gray-500 max-w-xs truncate">
-                            {application.description ||
-                              "No description provided"}
+                          <div className="text-gray-500 max-w-xs">
+                            <p
+                              className="truncate"
+                              title={application.description}
+                            >
+                              {application.description ||
+                                "No description provided"}
+                            </p>
+                            {application.status && (
+                              <span
+                                className={`mt-1 inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                                  application.status === "approved"
+                                    ? "bg-green-100 text-green-800"
+                                    : application.status === "rejected"
+                                    ? "bg-red-100 text-red-800"
+                                    : "bg-yellow-100 text-yellow-800"
+                                }`}
+                              >
+                                {application.status.charAt(0).toUpperCase() +
+                                  application.status.slice(1)}
+                              </span>
+                            )}
                           </div>
                         </div>
                       </td>
@@ -370,27 +397,47 @@ export default function AdminContentCreators() {
                     Content File
                   </label>
                   {selectedApplication.contentFile ? (
-                    <div className="text-gray-900">
-                      <p>
-                        <strong>Filename:</strong>{" "}
-                        {selectedApplication.contentFile.filename}
-                      </p>
-                      <p>
-                        <strong>Original Name:</strong>{" "}
-                        {selectedApplication.contentFile.originalName}
-                      </p>
-                      <p>
-                        <strong>Size:</strong>{" "}
-                        {selectedApplication.contentFile.size} bytes
-                      </p>
-                      <p>
-                        <strong>Type:</strong>{" "}
-                        {selectedApplication.contentFile.mimeType}
-                      </p>
+                    <div className="text-gray-900 bg-gray-50 p-4 rounded-md">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <p>
+                          <strong>Filename:</strong>{" "}
+                          {selectedApplication.contentFile.filename}
+                        </p>
+                        <p>
+                          <strong>Original Name:</strong>{" "}
+                          {selectedApplication.contentFile.originalName}
+                        </p>
+                        <p>
+                          <strong>Size:</strong>{" "}
+                          {(
+                            selectedApplication.contentFile.size /
+                            1024 /
+                            1024
+                          ).toFixed(2)}{" "}
+                          MB
+                        </p>
+                        <p>
+                          <strong>Type:</strong>{" "}
+                          {selectedApplication.contentFile.mimeType}
+                        </p>
+                      </div>
+                      {selectedApplication.contentFile.url && (
+                        <div className="mt-3">
+                          <a
+                            href={selectedApplication.contentFile.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                          >
+                            <FiEye className="mr-1 h-4 w-4" />
+                            View/Download File
+                          </a>
+                        </div>
+                      )}
                     </div>
                   ) : (
-                    <p className="text-gray-500">
-                      No file information available
+                    <p className="text-gray-500 bg-gray-50 p-4 rounded-md">
+                      No file uploaded
                     </p>
                   )}
                 </div>
@@ -410,11 +457,41 @@ export default function AdminContentCreators() {
                     Terms Agreement
                   </label>
                   <p className="text-gray-900">
-                    {selectedApplication.agreeToTerms
-                      ? "Agreed to terms"
-                      : "Not agreed"}
+                    <span
+                      className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                        selectedApplication.agreeToTerms
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
+                    >
+                      {selectedApplication.agreeToTerms
+                        ? "✓ Agreed to terms"
+                        : "✗ Not agreed"}
+                    </span>
                   </p>
                 </div>
+
+                {selectedApplication.status && (
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">
+                      Application Status
+                    </label>
+                    <p className="text-gray-900">
+                      <span
+                        className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                          selectedApplication.status === "approved"
+                            ? "bg-green-100 text-green-800"
+                            : selectedApplication.status === "rejected"
+                            ? "bg-red-100 text-red-800"
+                            : "bg-yellow-100 text-yellow-800"
+                        }`}
+                      >
+                        {selectedApplication.status.charAt(0).toUpperCase() +
+                          selectedApplication.status.slice(1)}
+                      </span>
+                    </p>
+                  </div>
+                )}
 
                 <div>
                   <label className="text-sm font-medium text-gray-500">
@@ -422,6 +499,15 @@ export default function AdminContentCreators() {
                   </label>
                   <p className="text-gray-900">
                     {new Date(selectedApplication.createdAt).toLocaleString()}
+                  </p>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium text-gray-500">
+                    Application ID
+                  </label>
+                  <p className="text-gray-900 font-mono text-sm bg-gray-50 p-2 rounded">
+                    {selectedApplication._id}
                   </p>
                 </div>
               </div>

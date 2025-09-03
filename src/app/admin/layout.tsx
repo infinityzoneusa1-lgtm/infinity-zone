@@ -2,7 +2,9 @@
 
 import { ReactNode, useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { AuthProvider, useAuth } from "@/contexts/auth-context";
+import { ProtectedRoute } from "@/components/admin/protected-route";
 import {
   FiHome,
   FiPackage,
@@ -11,19 +13,28 @@ import {
   FiFileText,
   FiSettings,
   FiVideo,
+  FiLogOut,
+  FiUser,
+  FiUsers,
 } from "react-icons/fi";
 
 interface AdminLayoutProps {
   children: ReactNode;
 }
 
-export default function AdminLayout({ children }: AdminLayoutProps) {
+function AdminContent({ children }: AdminLayoutProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const [mounted, setMounted] = useState(false);
+  const { user, logout } = useAuth();
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleLogout = () => {
+    logout();
+  };
 
   const navigation = [
     { name: "Dashboard", href: "/admin/dashboard", icon: FiHome },
@@ -36,6 +47,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     },
     { name: "Orders", href: "/admin/orders", icon: FiShoppingBag },
     { name: "Contacts", href: "/admin/contacts", icon: FiMail },
+    ...(user?.role === "super_admin"
+      ? [{ name: "Admin Users", href: "/admin/admin-users", icon: FiUsers }]
+      : []),
     { name: "Settings", href: "/admin/settings", icon: FiSettings },
   ];
 
@@ -120,12 +134,74 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 );
               })}
             </nav>
+
+            {/* User info and logout */}
+            <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
+              <div className="flex items-center w-full">
+                <div className="flex items-center flex-1">
+                  <div className="bg-red-100 rounded-full p-2">
+                    <FiUser className="h-5 w-5 text-red-600" />
+                  </div>
+                  <div className="ml-3 flex-1">
+                    <p className="text-sm font-medium text-gray-900">
+                      {user?.firstName} {user?.lastName}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {user?.role === "super_admin" ? "Super Admin" : "Admin"} •{" "}
+                      {user?.email}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={handleLogout}
+                  className="ml-3 flex-shrink-0 p-2 rounded-md text-gray-400 hover:text-red-600 hover:bg-gray-100 transition-colors"
+                  title="Logout"
+                >
+                  <FiLogOut className="h-5 w-5" />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main content */}
-      <div className="flex-1 overflow-hidden">{children}</div>
+      <div className="flex-1 overflow-hidden">
+        <div className="bg-white shadow-sm border-b border-gray-200">
+          <div className="px-4 py-4 sm:px-6">
+            <div className="flex items-center justify-between">
+              <h1 className="text-lg font-medium text-gray-900">
+                Admin Dashboard
+              </h1>
+              <button
+                onClick={handleLogout}
+                className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+              >
+                <FiLogOut className="mr-2 h-4 w-4" />
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+        {children}
+      </div>
     </div>
+  );
+}
+
+export default function AdminLayout({ children }: AdminLayoutProps) {
+  const pathname = usePathname();
+
+  // Don't wrap login page with auth
+  if (pathname === "/admin/login") {
+    return <AuthProvider>{children}</AuthProvider>;
+  }
+
+  return (
+    <AuthProvider>
+      <ProtectedRoute>
+        <AdminContent>{children}</AdminContent>
+      </ProtectedRoute>
+    </AuthProvider>
   );
 }

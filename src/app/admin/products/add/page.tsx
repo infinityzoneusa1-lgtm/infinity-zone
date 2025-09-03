@@ -58,11 +58,13 @@ export default function AddProduct() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
         },
         body: JSON.stringify(formData),
       });
 
       if (response.ok) {
+        alert("Product created successfully!");
         router.push("/admin/products");
       } else {
         const error = await response.json();

@@ -23,6 +23,7 @@ const professionalRoutes = require('./routes/professionals');
 const contactRoutes = require('./routes/contact');
 const internshipRoutes = require('./routes/internships');
 const stripeRoutes = require('./routes/stripe');
+const adminAuthRoutes = require('./routes/adminAuth');
 
 // Import middleware
 const errorHandler = require('./middleware/errorHandler');
@@ -59,9 +60,17 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // Connect to Database
-database.connect().then(connected => {
+database.connect().then(async (connected) => {
   if (connected) {
     console.log('🎉 Database setup completed');
+    
+    // Create default super admin
+    try {
+      const AdminUser = require('./models/AdminUser');
+      await AdminUser.createDefaultSuperAdmin();
+    } catch (error) {
+      console.log('⚠️  Error setting up default admin:', error.message);
+    }
   } else {
     console.log('⚠️  Running without database - some features may not work');
   }
@@ -90,6 +99,7 @@ app.use('/api/professionals', professionalRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/internships', internshipRoutes);
 app.use('/api/stripe', stripeRoutes);
+app.use('/api/admin/auth', adminAuthRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {

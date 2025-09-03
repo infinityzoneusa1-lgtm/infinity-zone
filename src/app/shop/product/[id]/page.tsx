@@ -80,19 +80,36 @@ export default function ProductDetail() {
 
   const handleAddToCart = () => {
     if (product) {
-      addToCart({
+      const cartItem = {
         id: parseInt(product._id, 16),
         title: product.title,
         price: product.price,
         image: product.images?.[0]?.url || "/placeholder.jpg",
         quantity: quantity,
-      });
+      };
+
+      console.log("Adding to cart:", cartItem);
+      console.log("Selected quantity:", quantity);
+
+      addToCart(cartItem);
+
+      // Optional: Show success message or feedback
+      console.log(`Added ${quantity} items to cart`);
     }
   };
 
-  const increaseQuantity = () => setQuantity((prev) => prev + 1);
-  const decreaseQuantity = () =>
+  const increaseQuantity = () => {
+    setQuantity((prev) => {
+      const newQuantity = prev + 1;
+      return product && newQuantity <= product.inventory.stock
+        ? newQuantity
+        : prev;
+    });
+  };
+
+  const decreaseQuantity = () => {
     setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+  };
 
   if (loading) {
     return (

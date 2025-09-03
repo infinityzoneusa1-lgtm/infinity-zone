@@ -40,7 +40,13 @@ export default function AdminProducts() {
   const fetchProducts = async () => {
     try {
       const response = await fetch(
-        "http://localhost:5000/api/products?admin=true"
+        "http://localhost:5000/api/products?admin=true",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+            "Content-Type": "application/json",
+          },
+        }
       );
       if (response.ok) {
         const data = await response.json();
@@ -60,10 +66,15 @@ export default function AdminProducts() {
 
   const handleDeleteProduct = async (productId: string) => {
     try {
+      const token = localStorage.getItem("adminToken");
       const response = await fetch(
         `http://localhost:5000/api/products/${productId}`,
         {
           method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         }
       );
       if (response.ok) {
@@ -72,11 +83,16 @@ export default function AdminProducts() {
         );
         setShowDeleteModal(false);
         setProductToDelete(null);
+        alert("Product deleted successfully!");
       } else {
-        console.error("Failed to delete product:", response.status);
+        const error = await response.json();
+        alert(
+          "Failed to delete product: " + (error.message || "Unknown error")
+        );
       }
     } catch (error) {
       console.error("Error deleting product:", error);
+      alert("Error deleting product");
     }
   };
 
@@ -234,7 +250,7 @@ export default function AdminProducts() {
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <div className="flex items-center space-x-2">
                             <Link
-                              href={`/admin/products/${product._id}/edit`}
+                              href={`/admin/products/edit/${product._id}`}
                               className="text-indigo-600 hover:text-indigo-900"
                             >
                               <FiEdit className="h-4 w-4" />
