@@ -24,6 +24,8 @@ export function BloggerFormSection() {
     website: "",
     agreeToTerms: false,
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState("");
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({
@@ -32,9 +34,59 @@ export function BloggerFormSection() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Blogger form submitted:", formData);
+    setIsSubmitting(true);
+    setSubmitMessage("");
+
+    try {
+      const response = await fetch("http://localhost:5000/api/bloggers", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          phone: formData.phone,
+          country: formData.country,
+          blogCategory: formData.blogCategory,
+          website: formData.website,
+          experience: "beginner", // Set to valid enum value
+          agreeToTerms: formData.agreeToTerms,
+        }),
+      });
+
+      if (response.ok) {
+        setSubmitMessage(
+          "Thank you! Your blogger application has been submitted successfully. We'll review it and get back to you soon."
+        );
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          phone: "",
+          country: "",
+          blogCategory: "",
+          website: "",
+          agreeToTerms: false,
+        });
+      } else {
+        const errorData = await response.json();
+        console.error("Error response:", errorData);
+        setSubmitMessage(
+          "Sorry, there was an error submitting your application. Please try again."
+        );
+      }
+    } catch (error) {
+      console.error("Error submitting blogger application:", error);
+      setSubmitMessage(
+        "Sorry, there was an error submitting your application. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -136,13 +188,17 @@ export function BloggerFormSection() {
                       <SelectValue placeholder="Country" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="us">United States</SelectItem>
-                      <SelectItem value="uk">United Kingdom</SelectItem>
-                      <SelectItem value="ca">Canada</SelectItem>
-                      <SelectItem value="au">Australia</SelectItem>
-                      <SelectItem value="pk">Pakistan</SelectItem>
-                      <SelectItem value="in">India</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
+                      <SelectItem value="United States">
+                        United States
+                      </SelectItem>
+                      <SelectItem value="United Kingdom">
+                        United Kingdom
+                      </SelectItem>
+                      <SelectItem value="Canada">Canada</SelectItem>
+                      <SelectItem value="Australia">Australia</SelectItem>
+                      <SelectItem value="Pakistan">Pakistan</SelectItem>
+                      <SelectItem value="India">India</SelectItem>
+                      <SelectItem value="Other">Other</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -198,12 +254,27 @@ export function BloggerFormSection() {
                   </p>
                 </div>
 
+                {/* Submit Message */}
+                {submitMessage && (
+                  <div
+                    className={`p-4 rounded-md ${
+                      submitMessage.includes("error") ||
+                      submitMessage.includes("Sorry")
+                        ? "bg-red-100 text-red-700"
+                        : "bg-green-100 text-green-700"
+                    }`}
+                  >
+                    {submitMessage}
+                  </div>
+                )}
+
                 {/* Submit Button */}
                 <Button
                   type="submit"
-                  className="w-full bg-primary hover:bg-primary/90 text-white py-4 rounded-xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                  disabled={!formData.agreeToTerms || isSubmitting}
+                  className="w-full bg-primary hover:bg-primary/90 text-white py-4 rounded-xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Submit
+                  {isSubmitting ? "Submitting..." : "Submit"}
                 </Button>
               </form>
             </div>

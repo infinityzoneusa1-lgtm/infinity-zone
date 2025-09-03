@@ -21,18 +21,69 @@ export function ContactFormSection() {
     phone: "",
     inquiry: "",
     message: "",
+    preferredContact: "",
+    additionalInfo: "",
+    newsletter: "",
+    agreeToTerms: false,
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState("");
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
+    setIsSubmitting(true);
+    setSubmitMessage("");
+
+    try {
+      const response = await fetch("http://localhost:5000/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          phone: formData.phone,
+          subject: formData.inquiry || "General Inquiry",
+          message: `Nature of Inquiry: ${formData.inquiry}\n\nMessage: ${formData.message}\n\nPreferred Contact: ${formData.preferredContact}\n\nAdditional Info: ${formData.additionalInfo}\n\nNewsletter: ${formData.newsletter}`,
+        }),
+      });
+
+      if (response.ok) {
+        setSubmitMessage("Thank you! Your message has been sent successfully.");
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          phone: "",
+          inquiry: "",
+          message: "",
+          preferredContact: "",
+          additionalInfo: "",
+          newsletter: "",
+          agreeToTerms: false,
+        });
+      } else {
+        setSubmitMessage(
+          "Sorry, there was an error sending your message. Please try again."
+        );
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      setSubmitMessage(
+        "Sorry, there was an error sending your message. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -152,7 +203,11 @@ export function ContactFormSection() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Preferred Method of Contact
                 </label>
-                <Select>
+                <Select
+                  onValueChange={(value: string) =>
+                    handleInputChange("preferredContact", value)
+                  }
+                >
                   <SelectTrigger className="w-full border border-black">
                     <SelectValue placeholder="Select one" />
                   </SelectTrigger>
@@ -169,6 +224,10 @@ export function ContactFormSection() {
                   Additional Information
                 </label>
                 <Input
+                  value={formData.additionalInfo}
+                  onChange={(e) =>
+                    handleInputChange("additionalInfo", e.target.value)
+                  }
                   placeholder="How did you hear about us?"
                   className="border border-black"
                 />
@@ -178,7 +237,11 @@ export function ContactFormSection() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Subscribe to Newsletter?
                 </label>
-                <Select>
+                <Select
+                  onValueChange={(value: string) =>
+                    handleInputChange("newsletter", value)
+                  }
+                >
                   <SelectTrigger className="w-full border border-black">
                     <SelectValue placeholder="Select one" />
                   </SelectTrigger>
@@ -190,7 +253,15 @@ export function ContactFormSection() {
               </div>
 
               <div className="flex items-start space-x-2 text-sm text-gray-600">
-                <input type="checkbox" className="mt-1" />
+                <input
+                  type="checkbox"
+                  className="mt-1"
+                  checked={formData.agreeToTerms}
+                  onChange={(e) =>
+                    handleInputChange("agreeToTerms", e.target.checked)
+                  }
+                  required
+                />
                 <p>
                   I agree to{" "}
                   <Link href="/terms-and-conditions" className="underline">
@@ -201,11 +272,25 @@ export function ContactFormSection() {
                 </p>
               </div>
 
+              {submitMessage && (
+                <div
+                  className={`p-4 rounded-md ${
+                    submitMessage.includes("error") ||
+                    submitMessage.includes("Sorry")
+                      ? "bg-red-100 text-red-700"
+                      : "bg-green-100 text-green-700"
+                  }`}
+                >
+                  {submitMessage}
+                </div>
+              )}
+
               <Button
                 type="submit"
-                className="w-full bg-red-900 hover:bg-red-800 text-white py-3 rounded-lg text-lg font-semibold"
+                disabled={!formData.agreeToTerms || isSubmitting}
+                className="w-full bg-red-900 hover:bg-red-800 text-white py-3 rounded-lg text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Submit
+                {isSubmitting ? "Submitting..." : "Submit"}
               </Button>
             </div>
           </form>

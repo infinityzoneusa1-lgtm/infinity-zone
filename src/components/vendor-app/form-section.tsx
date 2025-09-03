@@ -26,8 +26,11 @@ export function VendorFormSection() {
     postalCode: "",
     country: "",
     website: "",
+    businessName: "",
     agreeToTerms: false,
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState("");
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({
@@ -36,10 +39,66 @@ export function VendorFormSection() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    // Handle form submission here
+    setIsSubmitting(true);
+    setSubmitMessage("");
+
+    try {
+      const response = await fetch("http://localhost:5000/api/vendors", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          phone: formData.phone,
+          address: formData.address,
+          city: formData.city,
+          state: formData.state,
+          postalCode: formData.postalCode,
+          country: formData.country,
+          businessInfo: {
+            businessName: formData.businessName,
+            website: formData.website,
+            description: `Vendor application from ${formData.firstName} ${formData.lastName}`,
+          },
+        }),
+      });
+
+      if (response.ok) {
+        setSubmitMessage(
+          "Thank you! Your vendor application has been submitted successfully. We'll review it and get back to you soon."
+        );
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          phone: "",
+          address: "",
+          city: "",
+          state: "",
+          postalCode: "",
+          country: "",
+          website: "",
+          businessName: "",
+          agreeToTerms: false,
+        });
+      } else {
+        setSubmitMessage(
+          "Sorry, there was an error submitting your application. Please try again."
+        );
+      }
+    } catch (error) {
+      console.error("Error submitting vendor application:", error);
+      setSubmitMessage(
+        "Sorry, there was an error submitting your application. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -233,7 +292,7 @@ export function VendorFormSection() {
                 htmlFor="website"
                 className="text-sm font-medium text-gray-700 mb-2 block"
               >
-                Website *
+                Website (Optional)
               </Label>
               <Input
                 id="website"
@@ -242,7 +301,26 @@ export function VendorFormSection() {
                 value={formData.website}
                 onChange={(e) => handleInputChange("website", e.target.value)}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                required
+              />
+            </div>
+
+            {/* Business Name */}
+            <div>
+              <Label
+                htmlFor="businessName"
+                className="text-sm font-medium text-gray-700 mb-2 block"
+              >
+                Business Name (Optional)
+              </Label>
+              <Input
+                id="businessName"
+                type="text"
+                placeholder="Your Business Name"
+                value={formData.businessName}
+                onChange={(e) =>
+                  handleInputChange("businessName", e.target.value)
+                }
+                className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
 
@@ -263,13 +341,27 @@ export function VendorFormSection() {
               </span>
             </div>
 
+            {/* Submit Message */}
+            {submitMessage && (
+              <div
+                className={`p-4 rounded-md ${
+                  submitMessage.includes("error") ||
+                  submitMessage.includes("Sorry")
+                    ? "bg-red-100 text-red-700"
+                    : "bg-green-100 text-green-700"
+                }`}
+              >
+                {submitMessage}
+              </div>
+            )}
+
             {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full bg-red-800 hover:bg-red-900 text-white font-medium py-3 px-6 rounded-md transition-colors"
-              disabled={!formData.agreeToTerms}
+              className="w-full bg-red-800 hover:bg-red-900 text-white font-medium py-3 px-6 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={!formData.agreeToTerms || isSubmitting}
             >
-              SUBMIT
+              {isSubmitting ? "SUBMITTING..." : "SUBMIT"}
             </Button>
           </form>
         </div>

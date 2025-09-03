@@ -12,7 +12,7 @@ export function ProductShowcase() {
   };
 
   return (
-    <section className="relative py-20 overflow-hidden">
+    <section className="relative py-20 overflow-hidden mt-10">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0">
         <img
