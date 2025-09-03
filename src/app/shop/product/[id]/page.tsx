@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Image from "next/image";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
@@ -43,10 +44,12 @@ export default function ProductDetail() {
     const fetchProduct = async () => {
       try {
         console.log("Fetching product with ID:", productId);
-        const response = await fetch(`http://localhost:5000/api/products/${productId}`);
+        const response = await fetch(
+          `http://localhost:5000/api/products/${productId}`
+        );
         console.log("Response status:", response.status);
         console.log("Response ok:", response.ok);
-        
+
         if (response.ok) {
           const data = await response.json();
           console.log("Product data received:", data);
@@ -54,7 +57,12 @@ export default function ProductDetail() {
           setProduct(data.data?.product || data.product || data.data);
         } else {
           const errorText = await response.text();
-          console.error("Product not found. Status:", response.status, "Error:", errorText);
+          console.error(
+            "Product not found. Status:",
+            response.status,
+            "Error:",
+            errorText
+          );
           router.push("/shop");
         }
       } catch (error) {
@@ -83,7 +91,8 @@ export default function ProductDetail() {
   };
 
   const increaseQuantity = () => setQuantity((prev) => prev + 1);
-  const decreaseQuantity = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+  const decreaseQuantity = () =>
+    setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
   if (loading) {
     return (
@@ -108,10 +117,17 @@ export default function ProductDetail() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="space-y-4">
             <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
-              <img
-                src={product.images?.[mainImage]?.url || product.images?.[0]?.url || "/placeholder.jpg"}
+              <Image
+                src={
+                  product.images?.[mainImage]?.url ||
+                  product.images?.[0]?.url ||
+                  "/placeholder.jpg"
+                }
                 alt={product.title}
+                width={600}
+                height={600}
                 className="w-full h-full object-cover"
+                priority
               />
             </div>
             {product.images && product.images.length > 1 && (
@@ -121,12 +137,16 @@ export default function ProductDetail() {
                     key={index}
                     onClick={() => setMainImage(index)}
                     className={`aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 ${
-                      mainImage === index ? "border-blue-500" : "border-gray-200"
+                      mainImage === index
+                        ? "border-blue-500"
+                        : "border-gray-200"
                     }`}
                   >
-                    <img
+                    <Image
                       src={image.url}
                       alt={image.alt || product.title}
+                      width={150}
+                      height={150}
                       className="w-full h-full object-cover"
                     />
                   </button>
@@ -156,8 +176,16 @@ export default function ProductDetail() {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium">Stock:</span>
-              <span className={`text-sm ${product.inventory.stock > 0 ? "text-green-600" : "text-red-600"}`}>
-                {product.inventory.stock > 0 ? `${product.inventory.stock} in stock` : "Out of stock"}
+              <span
+                className={`text-sm ${
+                  product.inventory.stock > 0
+                    ? "text-green-600"
+                    : "text-red-600"
+                }`}
+              >
+                {product.inventory.stock > 0
+                  ? `${product.inventory.stock} in stock`
+                  : "Out of stock"}
               </span>
             </div>
             <div className="flex items-center gap-4">
@@ -184,11 +212,18 @@ export default function ProductDetail() {
             </div>
             <Button
               onClick={handleAddToCart}
-              disabled={product.inventory.stock === 0 || isInCart(parseInt(product._id, 16))}
+              disabled={
+                product.inventory.stock === 0 ||
+                isInCart(parseInt(product._id, 16))
+              }
               className="w-full bg-primary hover:bg-primary/90 text-white py-3 text-lg font-semibold flex items-center justify-center gap-2"
             >
               <ShoppingCart className="w-5 h-5" />
-              {product.inventory.stock === 0 ? "Out of Stock" : isInCart(parseInt(product._id, 16)) ? "Added to Cart" : "Add to Cart"}
+              {product.inventory.stock === 0
+                ? "Out of Stock"
+                : isInCart(parseInt(product._id, 16))
+                ? "Added to Cart"
+                : "Add to Cart"}
             </Button>
           </div>
         </div>

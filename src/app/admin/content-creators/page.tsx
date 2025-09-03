@@ -7,7 +7,6 @@ import {
   FiMail,
   FiPhone,
   FiCalendar,
-  FiFileText,
   FiEye,
   FiTrash2,
   FiGlobe,

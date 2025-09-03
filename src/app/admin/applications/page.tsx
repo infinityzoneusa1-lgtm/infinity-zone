@@ -25,6 +25,21 @@ interface Application {
   experience?: string;
 }
 
+interface VendorApplication extends Omit<Application, "type"> {
+  businessName: string;
+  website?: string;
+}
+
+interface BloggerApplication extends Omit<Application, "type"> {
+  socialMedia?: string;
+  experience?: string;
+}
+
+interface ContentCreatorApplication extends Omit<Application, "type"> {
+  socialMedia?: string;
+  experience?: string;
+}
+
 export default function AdminApplications() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
@@ -49,9 +64,15 @@ export default function AdminApplications() {
       const creators = await creatorRes.json();
 
       const allApplications = [
-        ...vendors.map((app: any) => ({ ...app, type: "vendor" as const })),
-        ...bloggers.map((app: any) => ({ ...app, type: "blogger" as const })),
-        ...creators.map((app: any) => ({
+        ...vendors.map((app: VendorApplication) => ({
+          ...app,
+          type: "vendor" as const,
+        })),
+        ...bloggers.map((app: BloggerApplication) => ({
+          ...app,
+          type: "blogger" as const,
+        })),
+        ...creators.map((app: ContentCreatorApplication) => ({
           ...app,
           type: "contentCreator" as const,
         })),
