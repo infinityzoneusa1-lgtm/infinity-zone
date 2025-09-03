@@ -2,15 +2,30 @@ const express = require('express');
 const Contact = require('../models/Contact');
 const { auth, adminAuth } = require('../middleware/auth');
 const { contactValidations } = require('../middleware/validation');
+const { uploadConfigs, handleMulterError } = require('../middleware/upload');
 
 const router = express.Router();
 
 // @desc    Submit contact form
 // @route   POST /api/contact
 // @access  Public
-router.post('/', async (req, res) => {
+router.post('/', uploadConfigs.attachments, async (req, res) => {
   try {
-    const contact = await Contact.create(req.body);
+    // Prepare contact data
+    const contactData = { ...req.body };
+    
+    // Add attachments info if uploaded
+    if (req.files && req.files.length > 0) {
+      contactData.attachments = req.files.map(file => ({
+        filename: file.filename,
+        originalName: file.originalname,
+        url: file.path,
+        size: file.size,
+        mimeType: file.mimetype
+      }));
+    }
+    
+    const contact = await Contact.create(contactData);
     
     res.status(201).json({
       success: true,
@@ -26,6 +41,9 @@ router.post('/', async (req, res) => {
   }
 });
 
+// Apply multer error handling
+router.use(handleMulterError);
+
 // @desc    Get all contacts
 // @route   GET /api/contact
 // @access  Public (for admin dashboard)
@@ -40,6 +58,38 @@ router.get('/', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Server error while fetching contacts'
+    });
+  }
+});
+
+// @desc    Update contact status
+// @route   PUT /api/contact/:id
+// @access  Public (for admin)
+router.put('/:id', async (req, res) => {
+  try {
+    const contact = await Contact.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+    
+    if (!contact) {
+      return res.status(404).json({
+        success: false,
+        message: 'Contact not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Contact updated successfully',
+      data: { contact }
+    });
+  } catch (error) {
+    console.error('Error updating contact:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while updating contact'
     });
   }
 });

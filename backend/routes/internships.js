@@ -1,15 +1,30 @@
 const express = require('express');
 const InternshipApplication = require('../models/InternshipApplication');
 const { auth, adminAuth } = require('../middleware/auth');
+const { uploadConfigs, handleMulterError } = require('../middleware/upload');
 
 const router = express.Router();
 
 // @desc    Submit internship application
 // @route   POST /api/internships
 // @access  Public
-router.post('/', async (req, res) => {
+router.post('/', uploadConfigs.resume, async (req, res) => {
   try {
-    const application = await InternshipApplication.create(req.body);
+    // Prepare application data
+    const applicationData = { ...req.body };
+    
+    // Add resume file info if uploaded
+    if (req.file) {
+      applicationData.resume = {
+        filename: req.file.filename,
+        originalName: req.file.originalname,
+        path: req.file.path,
+        size: req.file.size,
+        mimetype: req.file.mimetype
+      };
+    }
+    
+    const application = await InternshipApplication.create(applicationData);
     
     res.status(201).json({
       success: true,
@@ -24,6 +39,9 @@ router.post('/', async (req, res) => {
     });
   }
 });
+
+// Apply multer error handling
+router.use(handleMulterError);
 
 // @desc    Get all internship applications
 // @route   GET /api/internships

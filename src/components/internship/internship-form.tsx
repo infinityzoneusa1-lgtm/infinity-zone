@@ -9,8 +9,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
+import { Upload, FileText, X } from "lucide-react";
 
 export function InternshipFormSection() {
   const [formData, setFormData] = useState({
@@ -25,8 +26,10 @@ export function InternshipFormSection() {
     state: "",
     agreeToTerms: false,
   });
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({
@@ -35,18 +38,64 @@ export function InternshipFormSection() {
     }));
   };
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Check file type
+      const allowedTypes = [
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      ];
+
+      if (!allowedTypes.includes(file.type)) {
+        alert("Please upload a PDF or DOC/DOCX file");
+        return;
+      }
+
+      // Check file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        alert("File size should be less than 5MB");
+        return;
+      }
+
+      setResumeFile(file);
+    }
+  };
+
+  const removeFile = () => {
+    setResumeFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitMessage("");
 
     try {
+      // Create FormData for file upload
+      const submitData = new FormData();
+
+      // Append all form fields
+      Object.entries(formData).forEach(([key, value]) => {
+        submitData.append(key, value.toString());
+      });
+
+      // Append resume file if selected
+      if (resumeFile) {
+        submitData.append("resume", resumeFile);
+      }
+
       const response = await fetch("http://localhost:5000/api/internships", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+        body: submitData, // Don't set Content-Type header for FormData
       });
 
       if (response.ok) {
@@ -65,9 +114,15 @@ export function InternshipFormSection() {
           state: "",
           agreeToTerms: false,
         });
+        setResumeFile(null);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
       } else {
+        const errorData = await response.json();
         setSubmitMessage(
-          "Sorry, there was an error submitting your application. Please try again."
+          errorData.message ||
+            "Sorry, there was an error submitting your application. Please try again."
         );
       }
     } catch (error) {
@@ -281,9 +336,50 @@ export function InternshipFormSection() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   CV/RESUME
                 </label>
-                <div className="border border-dashed border-gray-400 rounded-lg p-6 text-center text-gray-500 cursor-pointer hover:bg-gray-50">
-                  <p>Upload your resume</p>
-                </div>
+
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".pdf,.doc,.docx"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+
+                {!resumeFile ? (
+                  <div
+                    onClick={triggerFileInput}
+                    className="border border-dashed border-gray-400 rounded-lg p-6 text-center text-gray-500 cursor-pointer hover:bg-gray-50 transition-colors"
+                  >
+                    <Upload className="mx-auto h-8 w-8 mb-2 text-gray-400" />
+                    <p className="text-sm">Click to upload your resume</p>
+                    <p className="text-xs text-gray-400 mt-1">
+                      PDF, DOC, DOCX (Max 5MB)
+                    </p>
+                  </div>
+                ) : (
+                  <div className="border border-gray-300 rounded-lg p-4 bg-gray-50">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <FileText className="h-8 w-8 text-blue-500" />
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">
+                            {resumeFile.name}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {(resumeFile.size / 1024 / 1024).toFixed(2)} MB
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={removeFile}
+                        className="text-red-500 hover:text-red-700 p-1"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="flex items-start space-x-2 text-sm text-gray-600">

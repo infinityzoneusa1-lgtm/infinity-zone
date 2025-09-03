@@ -10,8 +10,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
+import { Upload, FileText, X } from "lucide-react";
 
 export function ContactFormSection() {
   const [formData, setFormData] = useState({
@@ -26,8 +27,10 @@ export function ContactFormSection() {
     newsletter: "",
     agreeToTerms: false,
   });
+  const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({
@@ -36,25 +39,81 @@ export function ContactFormSection() {
     }));
   };
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || []);
+    if (files.length === 0) return;
+
+    // Check file types
+    const allowedTypes = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+      "text/plain",
+    ];
+
+    const invalidFiles = files.filter(
+      (file) => !allowedTypes.includes(file.type)
+    );
+    if (invalidFiles.length > 0) {
+      alert("Please upload only PDF, DOC, DOCX, images, or text files");
+      return;
+    }
+
+    // Check file sizes (10MB limit per file)
+    const oversizedFiles = files.filter((file) => file.size > 10 * 1024 * 1024);
+    if (oversizedFiles.length > 0) {
+      alert("Each file should be less than 10MB");
+      return;
+    }
+
+    // Check total number of files (max 5)
+    if (attachedFiles.length + files.length > 5) {
+      alert("Maximum 5 files can be uploaded");
+      return;
+    }
+
+    setAttachedFiles((prev) => [...prev, ...files]);
+  };
+
+  const removeFile = (index: number) => {
+    setAttachedFiles((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitMessage("");
 
     try {
+      // Create FormData for file upload
+      const submitData = new FormData();
+
+      // Append form fields
+      submitData.append("firstName", formData.firstName);
+      submitData.append("lastName", formData.lastName);
+      submitData.append("email", formData.email);
+      submitData.append("phone", formData.phone);
+      submitData.append("subject", formData.inquiry || "General Inquiry");
+      submitData.append(
+        "message",
+        `Nature of Inquiry: ${formData.inquiry}\n\nMessage: ${formData.message}\n\nPreferred Contact: ${formData.preferredContact}\n\nAdditional Info: ${formData.additionalInfo}\n\nNewsletter: ${formData.newsletter}`
+      );
+
+      // Append files
+      attachedFiles.forEach((file) => {
+        submitData.append("attachments", file);
+      });
+
       const response = await fetch("http://localhost:5000/api/contact", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          phone: formData.phone,
-          subject: formData.inquiry || "General Inquiry",
-          message: `Nature of Inquiry: ${formData.inquiry}\n\nMessage: ${formData.message}\n\nPreferred Contact: ${formData.preferredContact}\n\nAdditional Info: ${formData.additionalInfo}\n\nNewsletter: ${formData.newsletter}`,
-        }),
+        body: submitData, // Don't set Content-Type header for FormData
       });
 
       if (response.ok) {
@@ -71,9 +130,15 @@ export function ContactFormSection() {
           newsletter: "",
           agreeToTerms: false,
         });
+        setAttachedFiles([]);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
       } else {
+        const errorData = await response.json();
         setSubmitMessage(
-          "Sorry, there was an error sending your message. Please try again."
+          errorData.message ||
+            "Sorry, there was an error sending your message. Please try again."
         );
       }
     } catch (error) {
@@ -194,9 +259,56 @@ export function ContactFormSection() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Attachments (If Applicable)
                 </label>
-                <div className="border border-dashed border-gray-300 rounded-lg p-6 text-center text-gray-500">
-                  <p>If you have any relevant documents, attach them here.</p>
+
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.txt"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+
+                <div
+                  onClick={triggerFileInput}
+                  className="border border-dashed border-gray-300 rounded-lg p-6 text-center text-gray-500 cursor-pointer hover:bg-gray-50 transition-colors"
+                >
+                  <Upload className="mx-auto h-8 w-8 mb-2 text-gray-400" />
+                  <p className="text-sm">Click to upload attachments</p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    PDF, DOC, Images, TXT (Max 10MB each, 5 files total)
+                  </p>
                 </div>
+
+                {attachedFiles.length > 0 && (
+                  <div className="mt-4 space-y-2">
+                    {attachedFiles.map((file, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg p-3"
+                      >
+                        <div className="flex items-center space-x-3">
+                          <FileText className="h-5 w-5 text-blue-500" />
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">
+                              {file.name}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {(file.size / 1024 / 1024).toFixed(2)} MB
+                            </p>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeFile(index)}
+                          className="text-red-500 hover:text-red-700 p-1"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div>

@@ -10,6 +10,7 @@ import {
   FiEdit,
   FiTrash2,
   FiEye,
+  FiVideo,
 } from "react-icons/fi";
 
 interface DashboardStats {
@@ -185,148 +186,179 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-600"></div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-[#450209] border-t-transparent mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading dashboard...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <h1 className="text-3xl font-bold text-gray-900">
-              Admin Dashboard
+    <div className="space-y-8">
+      {/* Welcome Header */}
+      <div className="bg-gradient-to-r from-[#450209] to-[#5a0a0d] rounded-2xl shadow-xl p-8 text-white">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">
+              Welcome to Admin Dashboard
             </h1>
-            <Link
-              href="/admin/products/add"
-              className="bg-purple-600 text-white px-4 py-2 rounded-md flex items-center gap-2 hover:bg-purple-700"
-            >
-              <FiPlus /> Add Product
-            </Link>
+            <p className="text-white/80">
+              Monitor and manage your business operations
+            </p>
           </div>
+          <Link
+            href="/admin/products/add"
+            className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 transform hover:scale-105"
+          >
+            <FiPlus className="w-5 h-5" /> Add Product
+          </Link>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Products</p>
-                <p className="text-3xl font-bold text-gray-900">
-                  {stats.products}
-                </p>
-              </div>
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-green-500 hover:shadow-xl transition-all duration-200 transform hover:scale-105">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600 mb-1">
+                Total Products
+              </p>
+              <p className="text-3xl font-bold text-gray-900">
+                {stats.products}
+              </p>
+              <p className="text-xs text-green-600 mt-1">Active inventory</p>
+            </div>
+            <div className="bg-green-100 p-4 rounded-xl">
               <FiShoppingBag className="h-8 w-8 text-green-600" />
             </div>
           </div>
+        </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Orders</p>
-                <p className="text-3xl font-bold text-gray-900">
-                  {stats.orders}
-                </p>
-              </div>
-              <FiFileText className="h-8 w-8 text-purple-600" />
+        <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-[#450209] hover:shadow-xl transition-all duration-200 transform hover:scale-105">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600 mb-1">
+                Total Orders
+              </p>
+              <p className="text-3xl font-bold text-gray-900">{stats.orders}</p>
+              <p className="text-xs text-[#450209] mt-1">Customer orders</p>
+            </div>
+            <div className="bg-red-100 p-4 rounded-xl">
+              <FiFileText className="h-8 w-8 text-[#450209]" />
             </div>
           </div>
+        </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">
-                  Total Messages
-                </p>
-                <p className="text-3xl font-bold text-gray-900">
-                  {stats.contacts + stats.professionals}
-                </p>
-              </div>
+        <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-orange-500 hover:shadow-xl transition-all duration-200 transform hover:scale-105">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600 mb-1">Messages</p>
+              <p className="text-3xl font-bold text-gray-900">
+                {stats.contacts + stats.professionals}
+              </p>
+              <p className="text-xs text-orange-600 mt-1">Contact inquiries</p>
+            </div>
+            <div className="bg-orange-100 p-4 rounded-xl">
               <FiMail className="h-8 w-8 text-orange-600" />
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Applications Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+      {/* Applications Overview */}
+      <div className="bg-white rounded-2xl shadow-lg p-6">
+        <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
+          <FiFileText className="mr-3 text-[#450209]" />
+          Applications Overview
+        </h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           <Link
             href="/admin/vendors"
-            className="bg-white rounded-lg shadow p-4 hover:shadow-lg transition-shadow"
+            className="group bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl p-4 hover:from-indigo-100 hover:to-indigo-200 transition-all duration-200 transform hover:scale-105"
           >
             <div className="text-center">
-              <div className="text-2xl font-bold text-indigo-600">
+              <div className="text-2xl font-bold text-indigo-600 group-hover:text-indigo-700">
                 {stats.applications.vendors}
               </div>
-              <div className="text-sm text-gray-600">Vendor Apps</div>
+              <div className="text-sm text-indigo-600 font-medium">
+                Vendor Apps
+              </div>
             </div>
           </Link>
 
           <Link
             href="/admin/bloggers"
-            className="bg-white rounded-lg shadow p-4 hover:shadow-lg transition-shadow"
+            className="group bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 hover:from-green-100 hover:to-green-200 transition-all duration-200 transform hover:scale-105"
           >
             <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">
+              <div className="text-2xl font-bold text-green-600 group-hover:text-green-700">
                 {stats.applications.bloggers}
               </div>
-              <div className="text-sm text-gray-600">Blogger Apps</div>
+              <div className="text-sm text-green-600 font-medium">
+                Blogger Apps
+              </div>
             </div>
           </Link>
 
           <Link
             href="/admin/content-creators"
-            className="bg-white rounded-lg shadow p-4 hover:shadow-lg transition-shadow"
+            className="group bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 hover:from-blue-100 hover:to-blue-200 transition-all duration-200 transform hover:scale-105"
           >
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">
+              <div className="text-2xl font-bold text-blue-600 group-hover:text-blue-700">
                 {stats.applications.contentCreators}
               </div>
-              <div className="text-sm text-gray-600">Content Creators</div>
-            </div>
-          </Link>
-
-          <Link
-            href="/admin/professionals"
-            className="bg-white rounded-lg shadow p-4 hover:shadow-lg transition-shadow"
-          >
-            <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600">
-                {stats.professionals}
+              <div className="text-sm text-blue-600 font-medium">
+                Content Creators
               </div>
-              <div className="text-sm text-gray-600">Professional Contacts</div>
-            </div>
-          </Link>
-
-          <Link
-            href="/admin/contacts"
-            className="bg-white rounded-lg shadow p-4 hover:shadow-lg transition-shadow"
-          >
-            <div className="text-center">
-              <div className="text-2xl font-bold text-red-600">
-                {stats.contacts}
-              </div>
-              <div className="text-sm text-gray-600">Contact Messages</div>
             </div>
           </Link>
 
           <Link
             href="/admin/internships"
-            className="bg-white rounded-lg shadow p-4 hover:shadow-lg transition-shadow"
+            className="group bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4 hover:from-purple-100 hover:to-purple-200 transition-all duration-200 transform hover:scale-105"
           >
             <div className="text-center">
-              <div className="text-2xl font-bold text-orange-600">
+              <div className="text-2xl font-bold text-purple-600 group-hover:text-purple-700">
                 {stats.internships}
               </div>
-              <div className="text-sm text-gray-600">Internship Apps</div>
+              <div className="text-sm text-purple-600 font-medium">
+                Internship Apps
+              </div>
             </div>
           </Link>
 
-          <div className="bg-white rounded-lg shadow p-4">
+          <Link
+            href="/admin/professionals"
+            className="group bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl p-4 hover:from-yellow-100 hover:to-yellow-200 transition-all duration-200 transform hover:scale-105"
+          >
+            <div className="text-center">
+              <div className="text-2xl font-bold text-yellow-600 group-hover:text-yellow-700">
+                {stats.professionals}
+              </div>
+              <div className="text-sm text-yellow-600 font-medium">
+                Professional Contacts
+              </div>
+            </div>
+          </Link>
+
+          <Link
+            href="/admin/contacts"
+            className="group bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-4 hover:from-red-100 hover:to-red-200 transition-all duration-200 transform hover:scale-105"
+          >
+            <div className="text-center">
+              <div className="text-2xl font-bold text-red-600 group-hover:text-red-700">
+                {stats.contacts}
+              </div>
+              <div className="text-sm text-red-600 font-medium">
+                Contact Messages
+              </div>
+            </div>
+          </Link>
+
+          <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-4">
             <div className="text-center">
               <div className="text-2xl font-bold text-gray-600">
                 {stats.applications.vendors +
@@ -334,209 +366,237 @@ export default function AdminDashboard() {
                   stats.applications.contentCreators +
                   stats.internships}
               </div>
-              <div className="text-sm text-gray-600">Total Applications</div>
+              <div className="text-sm text-gray-600 font-medium">
+                Total Applications
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-[#450209] to-[#5a0a0d] rounded-xl p-4 text-white">
+            <div className="text-center">
+              <div className="text-2xl font-bold">
+                {stats.contacts +
+                  stats.professionals +
+                  stats.applications.vendors +
+                  stats.applications.bloggers +
+                  stats.applications.contentCreators +
+                  stats.internships}
+              </div>
+              <div className="text-sm font-medium opacity-90">
+                Total Submissions
+              </div>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Recent Products */}
-        <div className="bg-white rounded-lg shadow mb-8">
-          <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-            <h2 className="text-lg font-semibold text-gray-900">
-              Recent Products
-            </h2>
-            <Link
-              href="/admin/products"
-              className="text-purple-600 hover:text-purple-700"
-            >
-              View All
-            </Link>
-          </div>
-          <div className="p-6">
-            {recentProducts.length > 0 ? (
-              <div className="space-y-4">
-                {recentProducts.map((product) => (
-                  <div
-                    key={product._id}
-                    className="flex items-center justify-between p-4 border rounded-lg"
-                  >
-                    <div className="flex items-center space-x-4">
+      {/* Recent Products */}
+      <div className="bg-white rounded-2xl shadow-lg">
+        <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+          <h2 className="text-xl font-semibold text-gray-900 flex items-center">
+            <FiShoppingBag className="mr-3 text-[#450209]" />
+            Recent Products
+          </h2>
+          <Link
+            href="/admin/products"
+            className="text-[#450209] hover:text-[#350107] font-medium transition-colors duration-200"
+          >
+            View All →
+          </Link>
+        </div>
+        <div className="p-6">
+          {recentProducts.length > 0 ? (
+            <div className="space-y-4">
+              {recentProducts.map((product) => (
+                <div
+                  key={product._id}
+                  className="flex items-center justify-between p-4 border border-gray-100 rounded-xl hover:shadow-md transition-all duration-200 hover:border-[#450209]/20"
+                >
+                  <div className="flex items-center space-x-4">
+                    <div className="relative">
                       <img
                         src={product.images?.[0]?.url || "/placeholder.jpg"}
                         alt={product.title}
-                        className="w-12 h-12 rounded-lg object-cover"
+                        className="w-16 h-16 rounded-xl object-cover"
                       />
-                      <div>
-                        <h3 className="font-medium text-gray-900">
-                          {product.title}
-                        </h3>
-                        <p className="text-sm text-gray-600">
-                          ${product.price} • Stock:{" "}
+                      <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                        <span className="text-white text-xs font-bold">
                           {product.inventory?.stock || 0}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {product.category?.name || "No Category"}
-                        </p>
+                        </span>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <Link
-                        href={`/admin/products/edit/${product._id}`}
-                        className="text-blue-600 hover:text-blue-700 p-1"
-                        title="Edit Product"
-                      >
-                        <FiEdit />
-                      </Link>
-                      <button
-                        onClick={() => deleteProduct(product._id)}
-                        className="text-red-600 hover:text-red-700 p-1"
-                        title="Delete Product"
-                      >
-                        <FiTrash2 />
-                      </button>
+                    <div>
+                      <h3 className="font-semibold text-gray-900 text-lg">
+                        {product.title}
+                      </h3>
+                      <p className="text-[#450209] font-bold text-lg">
+                        ${product.price}
+                      </p>
+                      <div className="flex items-center space-x-2 mt-1">
+                        <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                          {product.category?.name || "No Category"}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          Stock: {product.inventory?.stock || 0}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-8">
-                <FiShoppingBag className="mx-auto h-12 w-12 text-gray-400" />
-                <h3 className="mt-2 text-sm font-medium text-gray-900">
-                  No products found
-                </h3>
-                <p className="mt-1 text-sm text-gray-500">
-                  Get started by adding your first product.
-                </p>
-                <div className="mt-6">
-                  <Link
-                    href="/admin/products/add"
-                    className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700"
-                  >
-                    <FiPlus className="mr-2 h-4 w-4" />
-                    Add Product
-                  </Link>
+                  <div className="flex items-center space-x-2">
+                    <Link
+                      href={`/admin/products/edit/${product._id}`}
+                      className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                      title="Edit Product"
+                    >
+                      <FiEdit className="w-5 h-5" />
+                    </Link>
+                    <button
+                      onClick={() => deleteProduct(product._id)}
+                      className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200"
+                      title="Delete Product"
+                    >
+                      <FiTrash2 className="w-5 h-5" />
+                    </button>
+                  </div>
                 </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <div className="bg-gray-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                <FiShoppingBag className="h-10 w-10 text-gray-400" />
               </div>
-            )}
-          </div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                No products found
+              </h3>
+              <p className="text-gray-500 mb-6">
+                Get started by adding your first product to the inventory.
+              </p>
+              <Link
+                href="/admin/products/add"
+                className="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-xl text-white bg-gradient-to-r from-[#450209] to-[#5a0a0d] hover:from-[#350107] hover:to-[#450209] transition-all duration-200 transform hover:scale-105"
+              >
+                <FiPlus className="mr-2 h-4 w-4" />
+                Add Your First Product
+              </Link>
+            </div>
+          )}
         </div>
+      </div>
 
-        {/* Quick Actions */}
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Link
-            href="/admin/products"
-            className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
-          >
-            <div className="flex items-center space-x-4">
+      {/* Quick Actions */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <Link
+          href="/admin/products"
+          className="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-200 transform hover:scale-105 border-l-4 border-green-500"
+        >
+          <div className="flex items-center space-x-4">
+            <div className="bg-green-100 p-4 rounded-xl group-hover:bg-green-200 transition-colors duration-200">
               <FiShoppingBag className="h-8 w-8 text-green-600" />
-              <div>
-                <h3 className="font-semibold text-gray-900">Manage Products</h3>
-                <p className="text-sm text-gray-600">
-                  Add, edit, or remove products
-                </p>
-              </div>
             </div>
-          </Link>
+            <div>
+              <h3 className="font-semibold text-gray-900 text-lg">
+                Manage Products
+              </h3>
+              <p className="text-gray-600">
+                Add, edit, or remove products from inventory
+              </p>
+            </div>
+          </div>
+        </Link>
 
-          <Link
-            href="/admin/contacts"
-            className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
-          >
-            <div className="flex items-center space-x-4">
+        <Link
+          href="/admin/contacts"
+          className="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-200 transform hover:scale-105 border-l-4 border-red-500"
+        >
+          <div className="flex items-center space-x-4">
+            <div className="bg-red-100 p-4 rounded-xl group-hover:bg-red-200 transition-colors duration-200">
               <FiMail className="h-8 w-8 text-red-600" />
-              <div>
-                <h3 className="font-semibold text-gray-900">
-                  Contact Messages
-                </h3>
-                <p className="text-sm text-gray-600">
-                  View contact form submissions
-                </p>
-              </div>
             </div>
-          </Link>
+            <div>
+              <h3 className="font-semibold text-gray-900 text-lg">
+                Contact Messages
+              </h3>
+              <p className="text-gray-600">
+                View and respond to customer inquiries
+              </p>
+            </div>
+          </div>
+        </Link>
 
-          <Link
-            href="/admin/vendors"
-            className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
-          >
-            <div className="flex items-center space-x-4">
+        <Link
+          href="/admin/applications"
+          className="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-200 transform hover:scale-105 border-l-4 border-[#450209]"
+        >
+          <div className="flex items-center space-x-4">
+            <div className="bg-red-100 p-4 rounded-xl group-hover:bg-red-200 transition-colors duration-200">
+              <FiFileText className="h-8 w-8 text-[#450209]" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900 text-lg">
+                All Applications
+              </h3>
+              <p className="text-gray-600">
+                Review vendor, blogger & content creator apps
+              </p>
+            </div>
+          </div>
+        </Link>
+
+        <Link
+          href="/admin/vendors"
+          className="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-200 transform hover:scale-105 border-l-4 border-indigo-500"
+        >
+          <div className="flex items-center space-x-4">
+            <div className="bg-indigo-100 p-4 rounded-xl group-hover:bg-indigo-200 transition-colors duration-200">
               <FiFileText className="h-8 w-8 text-indigo-600" />
-              <div>
-                <h3 className="font-semibold text-gray-900">
-                  Vendor Applications
-                </h3>
-                <p className="text-sm text-gray-600">
-                  Review vendor applications
-                </p>
-              </div>
             </div>
-          </Link>
-
-          <Link
-            href="/admin/bloggers"
-            className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
-          >
-            <div className="flex items-center space-x-4">
-              <FiFileText className="h-8 w-8 text-green-600" />
-              <div>
-                <h3 className="font-semibold text-gray-900">
-                  Blogger Applications
-                </h3>
-                <p className="text-sm text-gray-600">
-                  Review blogger applications
-                </p>
-              </div>
+            <div>
+              <h3 className="font-semibold text-gray-900 text-lg">
+                Vendor Applications
+              </h3>
+              <p className="text-gray-600">
+                Review and approve vendor partnerships
+              </p>
             </div>
-          </Link>
+          </div>
+        </Link>
 
-          <Link
-            href="/admin/content-creators"
-            className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
-          >
-            <div className="flex items-center space-x-4">
-              <FiFileText className="h-8 w-8 text-blue-600" />
-              <div>
-                <h3 className="font-semibold text-gray-900">
-                  Content Creators
-                </h3>
-                <p className="text-sm text-gray-600">
-                  Review content creator applications
-                </p>
-              </div>
+        <Link
+          href="/admin/content-creators"
+          className="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-200 transform hover:scale-105 border-l-4 border-blue-500"
+        >
+          <div className="flex items-center space-x-4">
+            <div className="bg-blue-100 p-4 rounded-xl group-hover:bg-blue-200 transition-colors duration-200">
+              <FiVideo className="h-8 w-8 text-blue-600" />
             </div>
-          </Link>
-
-          <Link
-            href="/admin/professionals"
-            className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow"
-          >
-            <div className="flex items-center space-x-4">
-              <FiMail className="h-8 w-8 text-purple-600" />
-              <div>
-                <h3 className="font-semibold text-gray-900">
-                  Professional Contacts
-                </h3>
-                <p className="text-sm text-gray-600">
-                  View professional consultations
-                </p>
-              </div>
+            <div>
+              <h3 className="font-semibold text-gray-900 text-lg">
+                Content Creators
+              </h3>
+              <p className="text-gray-600">
+                Manage content creator partnerships
+              </p>
             </div>
-          </Link>
+          </div>
+        </Link>
 
-          <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg shadow p-6 text-white">
-            <div className="flex items-center space-x-4">
-              <FiEye className="h-8 w-8" />
-              <div>
-                <h3 className="font-semibold">Total Submissions</h3>
-                <p className="text-lg font-bold">
-                  {stats.contacts +
-                    stats.professionals +
-                    stats.applications.vendors +
-                    stats.applications.bloggers +
-                    stats.applications.contentCreators}
-                </p>
-                <p className="text-sm opacity-90">All form submissions</p>
-              </div>
+        <div className="bg-gradient-to-br from-[#450209] to-[#5a0a0d] rounded-2xl shadow-lg p-6 text-white">
+          <div className="flex items-center space-x-4">
+            <div className="bg-white/20 p-4 rounded-xl">
+              <FiEye className="h-8 w-8 text-white" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-lg">System Overview</h3>
+              <p className="text-lg font-bold">
+                {stats.contacts +
+                  stats.professionals +
+                  stats.applications.vendors +
+                  stats.applications.bloggers +
+                  stats.applications.contentCreators +
+                  stats.internships}
+              </p>
+              <p className="text-white/80">Total submissions managed</p>
             </div>
           </div>
         </div>

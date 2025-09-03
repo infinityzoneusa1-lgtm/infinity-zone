@@ -14,12 +14,24 @@ import {
 
 interface Contact {
   _id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone?: string;
+  subject: string;
   message: string;
+  category?: string;
+  priority?: string;
+  status?: string;
+  attachments?: Array<{
+    filename: string;
+    originalName?: string;
+    url: string;
+    size: number;
+    mimeType: string;
+  }>;
   createdAt: string;
-  isRead: boolean;
+  isRead?: boolean;
 }
 
 export default function AdminContacts() {
@@ -53,7 +65,7 @@ export default function AdminContacts() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ isRead: true }),
+        body: JSON.stringify({ status: "read" }),
       });
 
       if (response.ok) {
@@ -89,12 +101,12 @@ export default function AdminContacts() {
   const openContactModal = (contact: Contact) => {
     setSelectedContact(contact);
     setShowModal(true);
-    if (!contact.isRead) {
+    if (contact.status === "new") {
       markAsRead(contact._id);
     }
   };
 
-  const unreadCount = contacts.filter((c) => !c.isRead).length;
+  const unreadCount = contacts.filter((c) => c.status === "new").length;
 
   if (loading) {
     return (
@@ -162,7 +174,7 @@ export default function AdminContacts() {
                     <tr
                       key={contact._id}
                       className={`hover:bg-gray-50 cursor-pointer ${
-                        !contact.isRead ? "bg-blue-50" : ""
+                        contact.status === "new" ? "bg-blue-50" : ""
                       }`}
                       onClick={() => openContactModal(contact)}
                     >
@@ -171,14 +183,16 @@ export default function AdminContacts() {
                           <div className="flex-shrink-0 h-10 w-10">
                             <div
                               className={`h-10 w-10 rounded-full flex items-center justify-center ${
-                                contact.isRead ? "bg-gray-100" : "bg-blue-100"
+                                contact.status === "new"
+                                  ? "bg-blue-100"
+                                  : "bg-gray-100"
                               }`}
                             >
                               <FiUser
                                 className={`h-5 w-5 ${
-                                  contact.isRead
-                                    ? "text-gray-600"
-                                    : "text-blue-600"
+                                  contact.status === "new"
+                                    ? "text-blue-600"
+                                    : "text-gray-600"
                                 }`}
                               />
                             </div>
@@ -186,12 +200,12 @@ export default function AdminContacts() {
                           <div className="ml-4">
                             <div
                               className={`text-sm font-medium ${
-                                contact.isRead
-                                  ? "text-gray-900"
-                                  : "text-blue-900"
+                                contact.status === "new"
+                                  ? "text-blue-900"
+                                  : "text-gray-900"
                               }`}
                             >
-                              {contact.name}
+                              {contact.firstName} {contact.lastName}
                             </div>
                             <div className="text-sm text-gray-500 flex items-center">
                               <FiMail className="mr-1 h-3 w-3" />
@@ -208,18 +222,23 @@ export default function AdminContacts() {
                       </td>
                       <td className="px-6 py-4">
                         <div className="text-sm text-gray-900 max-w-xs truncate">
-                          {contact.message}
+                          <div className="font-medium">{contact.subject}</div>
+                          <div className="text-gray-600">{contact.message}</div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
                           className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                            contact.isRead
+                            contact.status === "read" ||
+                            contact.status === "responded" ||
+                            contact.status === "resolved"
                               ? "bg-green-100 text-green-800"
+                              : contact.status === "in-progress"
+                              ? "bg-blue-100 text-blue-800"
                               : "bg-yellow-100 text-yellow-800"
                           }`}
                         >
-                          {contact.isRead ? "Read" : "Unread"}
+                          {contact.status === "new" ? "Unread" : contact.status}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -307,7 +326,14 @@ export default function AdminContacts() {
               <div className="ml-4">
                 <h3 className="text-lg font-medium text-gray-900">Read</h3>
                 <p className="text-2xl font-bold text-green-600">
-                  {contacts.filter((c) => c.isRead).length}
+                  {
+                    contacts.filter(
+                      (c) =>
+                        c.status === "read" ||
+                        c.status === "responded" ||
+                        c.status === "resolved"
+                    ).length
+                  }
                 </p>
               </div>
             </div>
@@ -337,7 +363,9 @@ export default function AdminContacts() {
                   <label className="text-sm font-medium text-gray-500">
                     Name
                   </label>
-                  <p className="text-gray-900">{selectedContact.name}</p>
+                  <p className="text-gray-900">
+                    {selectedContact.firstName} {selectedContact.lastName}
+                  </p>
                 </div>
 
                 <div>
@@ -358,12 +386,127 @@ export default function AdminContacts() {
 
                 <div>
                   <label className="text-sm font-medium text-gray-500">
+                    Subject
+                  </label>
+                  <p className="text-gray-900">{selectedContact.subject}</p>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium text-gray-500">
                     Message
                   </label>
                   <p className="text-gray-900 whitespace-pre-wrap bg-gray-50 p-4 rounded-md">
                     {selectedContact.message}
                   </p>
                 </div>
+
+                {selectedContact.attachments &&
+                  selectedContact.attachments.length > 0 && (
+                    <div>
+                      <label className="text-sm font-medium text-gray-500">
+                        Attachments
+                      </label>
+                      <div className="mt-2 space-y-2">
+                        {selectedContact.attachments.map(
+                          (attachment, index) => (
+                            <div
+                              key={index}
+                              className="flex items-center justify-between bg-gray-50 p-3 rounded-md"
+                            >
+                              <div className="flex items-center space-x-3">
+                                <div className="flex-shrink-0">
+                                  <svg
+                                    className="h-8 w-8 text-gray-400"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                    />
+                                  </svg>
+                                </div>
+                                <div>
+                                  <p className="text-sm font-medium text-gray-900">
+                                    {attachment.originalName ||
+                                      attachment.filename}
+                                  </p>
+                                  <p className="text-xs text-gray-500">
+                                    {(attachment.size / 1024 / 1024).toFixed(2)}{" "}
+                                    MB • {attachment.mimeType}
+                                  </p>
+                                </div>
+                              </div>
+                              <a
+                                href={`http://localhost:5000/${attachment.url}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                              >
+                                Download
+                              </a>
+                            </div>
+                          )
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                {selectedContact.category && (
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">
+                      Category
+                    </label>
+                    <p className="text-gray-900 capitalize">
+                      {selectedContact.category}
+                    </p>
+                  </div>
+                )}
+
+                {selectedContact.priority && (
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">
+                      Priority
+                    </label>
+                    <span
+                      className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                        selectedContact.priority === "urgent"
+                          ? "bg-red-100 text-red-800"
+                          : selectedContact.priority === "high"
+                          ? "bg-orange-100 text-orange-800"
+                          : selectedContact.priority === "medium"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : "bg-green-100 text-green-800"
+                      }`}
+                    >
+                      {selectedContact.priority}
+                    </span>
+                  </div>
+                )}
+
+                {selectedContact.status && (
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">
+                      Status
+                    </label>
+                    <span
+                      className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                        selectedContact.status === "resolved"
+                          ? "bg-green-100 text-green-800"
+                          : selectedContact.status === "in-progress"
+                          ? "bg-blue-100 text-blue-800"
+                          : selectedContact.status === "responded"
+                          ? "bg-purple-100 text-purple-800"
+                          : "bg-gray-100 text-gray-800"
+                      }`}
+                    >
+                      {selectedContact.status}
+                    </span>
+                  </div>
+                )}
 
                 <div>
                   <label className="text-sm font-medium text-gray-500">

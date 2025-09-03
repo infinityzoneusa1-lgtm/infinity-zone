@@ -24,6 +24,10 @@ const storage = multer.diskStorage({
       uploadPath += 'content/';
     } else if (file.fieldname === 'documents') {
       uploadPath += 'documents/';
+    } else if (file.fieldname === 'resume') {
+      uploadPath += 'resumes/';
+    } else if (file.fieldname === 'attachments') {
+      uploadPath += 'attachments/';
     } else {
       uploadPath += 'misc/';
     }
@@ -50,7 +54,9 @@ const fileFilter = (req, file, cb) => {
     productImages: /jpeg|jpg|png|webp/,
     categoryImage: /jpeg|jpg|png|gif|webp/,
     contentFile: /jpeg|jpg|png|gif|mp4|mov|avi|pdf|doc|docx|txt/,
-    documents: /pdf|doc|docx|jpeg|jpg|png/
+    documents: /pdf|doc|docx|jpeg|jpg|png/,
+    resume: /pdf|doc|docx/,
+    attachments: /pdf|doc|docx|jpeg|jpg|png|gif|txt/
   };
 
   const fieldAllowedTypes = allowedTypes[file.fieldname] || /jpeg|jpg|png/;
@@ -81,6 +87,8 @@ const uploadConfigs = {
   categoryImage: upload.single('categoryImage'),
   contentFile: upload.single('contentFile'),
   documents: upload.array('documents', 5),
+  resume: upload.single('resume'),
+  attachments: upload.array('attachments', 5),
   mixed: upload.fields([
     { name: 'avatar', maxCount: 1 },
     { name: 'documents', maxCount: 5 }

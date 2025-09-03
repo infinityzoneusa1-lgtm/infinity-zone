@@ -62,6 +62,23 @@ const internshipApplicationSchema = new mongoose.Schema({
       },
       message: 'You must agree to terms and conditions'
     }
+  },
+  resume: {
+    filename: {
+      type: String
+    },
+    originalName: {
+      type: String
+    },
+    url: {
+      type: String
+    },
+    size: {
+      type: Number
+    },
+    mimeType: {
+      type: String
+    }
   }
 }, {
   timestamps: true
