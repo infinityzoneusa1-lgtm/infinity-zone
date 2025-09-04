@@ -13,7 +13,8 @@ export function TermConditionHeroSection() {
           priority
         />
         {/* Overlay */}
-        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="absolute inset-0 bg-black/20">
+        </div>
       </div>
 
       {/* Content */}
