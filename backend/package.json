@@ -3,11 +3,19 @@
   "version": "1.0.0",
   "description": "Backend API for Infinity Zone E-commerce Platform",
   "main": "server.js",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
+    "build": "npm install --production",
     "test": "jest",
-    "seed": "node scripts/seedDatabase.js"
+    "seed": "node scripts/seedDatabase.js",
+    "seed-atlas": "node scripts/seedAtlasDatabase.js",
+    "test-atlas": "node scripts/testAtlasConnection.js",
+    "postinstall": "npm run seed-atlas || echo 'Seeding skipped'"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
