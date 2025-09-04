@@ -40,7 +40,11 @@ export default function AdminBloggers() {
 
   const fetchApplications = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/bloggers");
+      const response = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
+        }/api/bloggers`
+      );
       if (response.ok) {
         const data = await response.json();
         setApplications(data);
@@ -60,7 +64,9 @@ export default function AdminBloggers() {
     ) {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/bloggers/${id}`,
+          `${
+            process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
+          }/api/bloggers/${id}`,
           {
             method: "DELETE",
           }

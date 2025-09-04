@@ -42,7 +42,11 @@ export default function AdminInternships() {
 
   const fetchApplications = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/internships");
+      const response = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
+        }/api/internships`
+      );
       if (response.ok) {
         const data = await response.json();
         setApplications(data);
@@ -62,7 +66,9 @@ export default function AdminInternships() {
     ) {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/internships/${id}`,
+          `${
+            process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
+          }/api/internships/${id}`,
           {
             method: "DELETE",
           }

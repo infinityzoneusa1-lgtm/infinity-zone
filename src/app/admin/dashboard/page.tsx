@@ -63,6 +63,10 @@ export default function AdminDashboard() {
 
   const fetchDashboardData = async () => {
     try {
+      const API_BASE = `${
+        process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
+      }/api`;
+
       // Fetch stats
       const [
         productsRes,
@@ -74,22 +78,22 @@ export default function AdminDashboard() {
         professionalRes,
         internshipRes,
       ] = await Promise.all([
-        fetch("http://localhost:5000/api/products?admin=true").catch(() => ({
+        fetch(`${API_BASE}/products?admin=true`).catch(() => ({
           ok: false,
         })),
-        fetch("http://localhost:5000/api/orders").catch(() => ({ ok: false })),
-        fetch("http://localhost:5000/api/vendors").catch(() => ({ ok: false })),
-        fetch("http://localhost:5000/api/bloggers").catch(() => ({
+        fetch(`${API_BASE}/orders`).catch(() => ({ ok: false })),
+        fetch(`${API_BASE}/vendors`).catch(() => ({ ok: false })),
+        fetch(`${API_BASE}/bloggers`).catch(() => ({
           ok: false,
         })),
-        fetch("http://localhost:5000/api/content-creators").catch(() => ({
+        fetch(`${API_BASE}/content-creators`).catch(() => ({
           ok: false,
         })),
-        fetch("http://localhost:5000/api/contact").catch(() => ({ ok: false })),
-        fetch("http://localhost:5000/api/professionals").catch(() => ({
+        fetch(`${API_BASE}/contact`).catch(() => ({ ok: false })),
+        fetch(`${API_BASE}/professionals`).catch(() => ({
           ok: false,
         })),
-        fetch("http://localhost:5000/api/internships").catch(() => ({
+        fetch(`${API_BASE}/internships`).catch(() => ({
           ok: false,
         })),
       ]);
@@ -157,16 +161,17 @@ export default function AdminDashboard() {
   const deleteProduct = async (id: string) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
       try {
-        const response = await fetch(
-          `http://localhost:5000/api/products/${id}`,
-          {
-            method: "DELETE",
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const API_BASE = `${
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
+        }/api`;
+
+        const response = await fetch(`${API_BASE}/products/${id}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+            "Content-Type": "application/json",
+          },
+        });
 
         if (response.ok) {
           alert("Product deleted successfully!");

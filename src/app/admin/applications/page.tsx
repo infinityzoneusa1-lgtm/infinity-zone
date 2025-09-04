@@ -44,9 +44,21 @@ export default function AdminApplications() {
   const fetchApplications = async () => {
     try {
       const [vendorRes, bloggerRes, creatorRes] = await Promise.all([
-        fetch("http://localhost:5000/api/vendors"),
-        fetch("http://localhost:5000/api/bloggers"),
-        fetch("http://localhost:5000/api/content-creators"),
+        fetch(
+          `${
+            process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
+          }/api/vendors`
+        ),
+        fetch(
+          `${
+            process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
+          }/api/bloggers`
+        ),
+        fetch(
+          `${
+            process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
+          }/api/content-creators`
+        ),
       ]);
 
       const vendors = await vendorRes.json();

@@ -93,10 +93,15 @@ export function InternshipFormSection() {
         submitData.append("resume", resumeFile);
       }
 
-      const response = await fetch("http://localhost:5000/api/internships", {
-        method: "POST",
-        body: submitData, // Don't set Content-Type header for FormData
-      });
+      const response = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
+        }/api/internships`,
+        {
+          method: "POST",
+          body: submitData, // Don't set Content-Type header for FormData
+        }
+      );
 
       if (response.ok) {
         setSubmitMessage(

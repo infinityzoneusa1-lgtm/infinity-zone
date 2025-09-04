@@ -42,7 +42,11 @@ export default function AdminVendors() {
 
   const fetchApplications = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/vendors");
+      const response = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
+        }/api/vendors`
+      );
       if (response.ok) {
         const data = await response.json();
         setApplications(data);
@@ -60,7 +64,9 @@ export default function AdminVendors() {
     ) {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/vendors/${id}`,
+          `${
+            process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
+          }/api/vendors/${id}`,
           {
             method: "DELETE",
           }

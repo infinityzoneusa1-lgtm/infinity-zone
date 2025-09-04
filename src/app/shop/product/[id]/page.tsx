@@ -45,7 +45,9 @@ export default function ProductDetail() {
       try {
         console.log("Fetching product with ID:", productId);
         const response = await fetch(
-          `http://localhost:5000/api/products/${productId}`
+          `${
+            process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
+          }/api/products/${productId}`
         );
         console.log("Response status:", response.status);
         console.log("Response ok:", response.ok);

@@ -13,7 +13,8 @@ import {
 } from "react-icons/fi";
 import Image from "next/image";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000";
 
 export default function SettingsPage() {
   const { user, logout, updateUser } = useAuth();

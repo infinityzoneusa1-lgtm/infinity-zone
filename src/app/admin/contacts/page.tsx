@@ -46,7 +46,11 @@ export default function AdminContacts() {
 
   const fetchContacts = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/contact");
+      const response = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
+        }/api/contact`
+      );
       if (response.ok) {
         const data = await response.json();
         setContacts(data);
@@ -60,13 +64,18 @@ export default function AdminContacts() {
 
   const markAsRead = async (id: string) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/contact/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ status: "read" }),
-      });
+      const response = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
+        }/api/contact/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status: "read" }),
+        }
+      );
 
       if (response.ok) {
         fetchContacts();
@@ -82,7 +91,9 @@ export default function AdminContacts() {
     ) {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/contact/${id}`,
+          `${
+            process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
+          }/api/contact/${id}`,
           {
             method: "DELETE",
           }
@@ -441,7 +452,10 @@ export default function AdminContacts() {
                                 </div>
                               </div>
                               <a
-                                href={`http://localhost:5000/${attachment.url}`}
+                                href={`${
+                                  process.env.NEXT_PUBLIC_BACKEND_URL ||
+                                  "http://localhost:10000"
+                                }/${attachment.url}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-blue-600 hover:text-blue-800 text-sm font-medium"

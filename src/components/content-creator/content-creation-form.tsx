@@ -37,7 +37,9 @@ export default function ContentCreationForm() {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/content-creators",
+        `${
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
+        }/api/content-creators`,
         {
           method: "POST",
           headers: {

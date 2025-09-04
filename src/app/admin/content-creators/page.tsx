@@ -51,7 +51,9 @@ export default function AdminContentCreators() {
   const fetchApplications = async () => {
     try {
       const response = await fetch(
-        "http://localhost:5000/api/content-creators"
+        `${
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
+        }/api/content-creators`
       );
       if (response.ok) {
         const data = await response.json();
@@ -72,7 +74,9 @@ export default function AdminContentCreators() {
     ) {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/content-creators/${id}`,
+          `${
+            process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
+          }/api/content-creators/${id}`,
           {
             method: "DELETE",
           }

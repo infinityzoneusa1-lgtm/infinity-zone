@@ -45,28 +45,33 @@ export function VendorFormSection() {
     setSubmitMessage("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/vendors", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          phone: formData.phone,
-          address: formData.address,
-          city: formData.city,
-          state: formData.state,
-          postalCode: formData.postalCode,
-          country: formData.country,
-          businessInfo: {
-            businessName: formData.businessName,
-            website: formData.website,
-            description: `Vendor application from ${formData.firstName} ${formData.lastName}`,
+      const response = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
+        }/api/vendors`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
-        }),
-      });
+          body: JSON.stringify({
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            email: formData.email,
+            phone: formData.phone,
+            address: formData.address,
+            city: formData.city,
+            state: formData.state,
+            postalCode: formData.postalCode,
+            country: formData.country,
+            businessInfo: {
+              businessName: formData.businessName,
+              website: formData.website,
+              description: `Vendor application from ${formData.firstName} ${formData.lastName}`,
+            },
+          }),
+        }
+      );
 
       if (response.ok) {
         setSubmitMessage(

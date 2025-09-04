@@ -50,7 +50,9 @@ export default function EditProduct() {
   const fetchProduct = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/products/${productId}`
+        `${
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
+        }/api/products/${productId}`
       );
       if (response.ok) {
         const result = await response.json();
@@ -112,7 +114,9 @@ export default function EditProduct() {
       };
 
       const response = await fetch(
-        `http://localhost:5000/api/products/${productId}`,
+        `${
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
+        }/api/products/${productId}`,
         {
           method: "PUT",
           headers: {

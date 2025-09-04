@@ -39,24 +39,29 @@ export function FatoumataDibbaContactSection() {
     setSubmitMessage("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/professionals", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          phone: formData.phone,
-          professionalId: "fatoumata-dibba",
-          serviceType: "consultation",
-          message: formData.yourMessage,
-          preferredContactMethod: "email",
-          urgency: "medium",
-          agreeToTerms: formData.agreeToTerms,
-        }),
-      });
+      const response = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
+        }/api/professionals`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            email: formData.email,
+            phone: formData.phone,
+            professionalId: "fatoumata-dibba",
+            serviceType: "consultation",
+            message: formData.yourMessage,
+            preferredContactMethod: "email",
+            urgency: "medium",
+            agreeToTerms: formData.agreeToTerms,
+          }),
+        }
+      );
 
       if (response.ok) {
         setSubmitMessage(

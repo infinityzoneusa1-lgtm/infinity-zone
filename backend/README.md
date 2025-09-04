@@ -110,7 +110,7 @@ npm run dev
 npm start
 ```
 
-The server will start on `http://localhost:5000`
+The server will start on `http://localhost:10000`
 
 ## 📡 API Endpoints
 
@@ -157,7 +157,7 @@ The server will start on `http://localhost:5000`
 
 ### Register User
 ```javascript
-const response = await fetch('http://localhost:5000/api/auth/register', {
+const response = await fetch('http://localhost:10000/api/auth/register', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'
@@ -181,7 +181,7 @@ formData.append('category', 'categoryId');
 formData.append('sku', 'PROD-001');
 formData.append('productImages', imageFile);
 
-const response = await fetch('http://localhost:5000/api/products', {
+const response = await fetch('http://localhost:10000/api/products', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer ' + token
@@ -193,7 +193,7 @@ const response = await fetch('http://localhost:5000/api/products', {
 ### Process Payment
 ```javascript
 // 1. Create payment intent
-const paymentResponse = await fetch('http://localhost:5000/api/stripe/create-payment-intent', {
+const paymentResponse = await fetch('http://localhost:10000/api/stripe/create-payment-intent', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'

@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Star, Search } from "lucide-react";
 import { useCart } from "@/contexts/cart-context";
+import { api } from "@/lib/api";
 
 interface Product {
   _id: string;
@@ -43,28 +44,22 @@ export function ProductSection() {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/products");
-      if (response.ok) {
-        const result = await response.json();
-        console.log("Products API response:", result); // Debug log
+      const result = await api.getProducts();
+      console.log("Products API response:", result); // Debug log
 
-        // Handle both direct array and structured response
-        let productsData = [];
-        if (Array.isArray(result)) {
-          productsData = result;
-        } else if (result.data && Array.isArray(result.data.products)) {
-          productsData = result.data.products;
-        } else if (result.data && Array.isArray(result.data)) {
-          productsData = result.data;
-        }
-
-        console.log("Processed products data:", productsData); // Debug log
-        console.log("First product ID:", productsData?.[0]?._id); // Debug log
-        setProducts(productsData);
-      } else {
-        console.error("Failed to fetch products:", response.status);
-        setProducts([]);
+      // Handle both direct array and structured response
+      let productsData = [];
+      if (Array.isArray(result)) {
+        productsData = result;
+      } else if (result.data && Array.isArray(result.data.products)) {
+        productsData = result.data.products;
+      } else if (result.data && Array.isArray(result.data)) {
+        productsData = result.data;
       }
+
+      console.log("Processed products data:", productsData); // Debug log
+      console.log("First product ID:", productsData?.[0]?._id); // Debug log
+      setProducts(productsData);
     } catch (error) {
       console.error("Error fetching products:", error);
       setProducts([]);

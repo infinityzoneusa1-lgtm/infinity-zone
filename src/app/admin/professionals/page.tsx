@@ -41,7 +41,11 @@ export default function AdminProfessionalContacts() {
 
   const fetchContacts = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/professionals");
+      const response = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
+        }/api/professionals`
+      );
       if (response.ok) {
         const data = await response.json();
         setContacts(data);
@@ -61,7 +65,9 @@ export default function AdminProfessionalContacts() {
     ) {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/professionals/${id}`,
+          `${
+            process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
+          }/api/professionals/${id}`,
           {
             method: "DELETE",
           }

@@ -111,10 +111,15 @@ export function ContactFormSection() {
         submitData.append("attachments", file);
       });
 
-      const response = await fetch("http://localhost:5000/api/contact", {
-        method: "POST",
-        body: submitData, // Don't set Content-Type header for FormData
-      });
+      const response = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
+        }/api/contact`,
+        {
+          method: "POST",
+          body: submitData, // Don't set Content-Type header for FormData
+        }
+      );
 
       if (response.ok) {
         setSubmitMessage("Thank you! Your message has been sent successfully.");

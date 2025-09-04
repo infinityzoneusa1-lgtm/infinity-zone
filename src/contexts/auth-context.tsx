@@ -33,7 +33,9 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API_BASE_URL = `${
+  process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
+}/api`;
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -62,7 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/admin/auth/login`, {
+      const response = await fetch(`${API_BASE_URL}/admin/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

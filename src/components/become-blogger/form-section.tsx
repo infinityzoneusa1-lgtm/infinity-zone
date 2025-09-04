@@ -40,23 +40,28 @@ export function BloggerFormSection() {
     setSubmitMessage("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/bloggers", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          phone: formData.phone,
-          country: formData.country,
-          blogCategory: formData.blogCategory,
-          website: formData.website,
-          experience: "beginner", // Set to valid enum value
-          agreeToTerms: formData.agreeToTerms,
-        }),
-      });
+      const response = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
+        }/api/bloggers`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            email: formData.email,
+            phone: formData.phone,
+            country: formData.country,
+            blogCategory: formData.blogCategory,
+            website: formData.website,
+            experience: "beginner", // Set to valid enum value
+            agreeToTerms: formData.agreeToTerms,
+          }),
+        }
+      );
 
       if (response.ok) {
         setSubmitMessage(
