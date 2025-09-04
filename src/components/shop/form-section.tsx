@@ -34,7 +34,7 @@ export function BloggerFormSection() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Blogger form submitted:", formData);
+    // console.log("Blogger form submitted:", formData);
   };
 
   return (

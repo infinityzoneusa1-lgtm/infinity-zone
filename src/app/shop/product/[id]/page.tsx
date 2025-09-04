@@ -43,18 +43,18 @@ export default function ProductDetail() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        console.log("Fetching product with ID:", productId);
+        // console.log("Fetching product with ID:", productId);
         const response = await fetch(
           `${
             process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
           }/api/products/${productId}`
         );
-        console.log("Response status:", response.status);
-        console.log("Response ok:", response.ok);
+        // console.log("Response status:", response.status);
+        // console.log("Response ok:", response.ok);
 
         if (response.ok) {
           const data = await response.json();
-          console.log("Product data received:", data);
+          // console.log("Product data received:", data);
           // Backend returns data.product, not data.data
           setProduct(data.data?.product || data.product || data.data);
         } else {
@@ -90,13 +90,13 @@ export default function ProductDetail() {
         quantity: quantity,
       };
 
-      console.log("Adding to cart:", cartItem);
-      console.log("Selected quantity:", quantity);
+      // console.log("Adding to cart:", cartItem);
+      // console.log("Selected quantity:", quantity);
 
       addToCart(cartItem);
 
       // Optional: Show success message or feedback
-      console.log(`Added ${quantity} items to cart`);
+      // console.log(`Added ${quantity} items to cart`);
     }
   };
 

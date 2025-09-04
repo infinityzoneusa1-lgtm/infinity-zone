@@ -45,7 +45,7 @@ export function ProductSection() {
   const fetchProducts = async () => {
     try {
       const result = await api.getProducts();
-      console.log("Products API response:", result); // Debug log
+      // console.log("Products API response:", result); // Debug log
 
       // Handle both direct array and structured response
       let productsData = [];
@@ -57,8 +57,8 @@ export function ProductSection() {
         productsData = result.data;
       }
 
-      console.log("Processed products data:", productsData); // Debug log
-      console.log("First product ID:", productsData?.[0]?._id); // Debug log
+      // console.log("Processed products data:", productsData); // Debug log
+      // console.log("First product ID:", productsData?.[0]?._id); // Debug log
       setProducts(productsData);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -97,7 +97,7 @@ export function ProductSection() {
   };
 
   const handleProductClick = (id: string) => {
-    console.log("Product clicked with ID:", id);
+    // console.log("Product clicked with ID:", id);
     router.push(`/shop/product/${id}`);
   };
 

@@ -120,7 +120,7 @@ export default function AdminDashboard() {
           : [];
 
       // Debug log to check products data
-      console.log("Products API Response:", products);
+      // console.log("Products API Response:", products);
 
       // Ensure all responses are arrays
       const productsArray = Array.isArray(products) ? products : [];
@@ -134,7 +134,7 @@ export default function AdminDashboard() {
         : [];
       const internshipsArray = Array.isArray(internships) ? internships : [];
 
-      console.log("Products Array Length:", productsArray.length);
+      // console.log("Products Array Length:", productsArray.length);
 
       setStats({
         products: productsArray.length || 0,
