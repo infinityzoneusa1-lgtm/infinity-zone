@@ -354,21 +354,21 @@ export default function AdminContacts() {
 
       {/* Contact Details Modal */}
       {showModal && selectedContact && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-20 mx-auto p-5 border w-11/12 max-w-2xl shadow-lg rounded-md bg-white">
-            <div className="mt-3">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-medium text-gray-900">
-                  Contact Message Details
-                </h3>
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="text-gray-400 hover:text-gray-600"
-                >
-                  ×
-                </button>
-              </div>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="relative w-full max-w-2xl max-h-[90vh] bg-white rounded-lg shadow-xl overflow-hidden">
+            <div className="flex justify-between items-center p-6 border-b bg-white sticky top-0 z-10">
+              <h3 className="text-lg font-medium text-gray-900">
+                Contact Message Details
+              </h3>
+              <button
+                onClick={() => setShowModal(false)}
+                className="text-gray-400 hover:text-gray-600 text-2xl leading-none"
+              >
+                ×
+              </button>
+            </div>
 
+            <div className="overflow-y-auto max-h-[calc(90vh-140px)] p-6">
               <div className="space-y-4">
                 <div>
                   <label className="text-sm font-medium text-gray-500">
@@ -531,21 +531,21 @@ export default function AdminContacts() {
                   </p>
                 </div>
               </div>
+            </div>
 
-              <div className="flex justify-end space-x-4 mt-6 pt-4 border-t">
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                >
-                  Close
-                </button>
-                <button
-                  onClick={() => deleteContact(selectedContact._id)}
-                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
-                >
-                  Delete Message
-                </button>
-              </div>
+            <div className="flex justify-end space-x-4 p-6 border-t bg-white sticky bottom-0">
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => deleteContact(selectedContact._id)}
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+              >
+                Delete Message
+              </button>
             </div>
           </div>
         </div>
