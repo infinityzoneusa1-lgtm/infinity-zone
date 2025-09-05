@@ -164,41 +164,97 @@ export default function AdminUsersPage() {
   // Only super admin can access this page
   if (currentUser?.role !== "super_admin") {
     return (
-      <div className="p-6">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <h3 className="text-red-800 font-medium">Access Denied</h3>
-          <p className="text-red-600 text-sm mt-1">
-            Only Super Admins can manage user accounts.
-          </p>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-red-50 border border-red-200 rounded-2xl p-6 shadow-lg">
+            <h3 className="text-red-800 font-semibold text-lg">
+              Access Denied
+            </h3>
+            <p className="text-red-600 mt-2">
+              Only Super Admins can manage user accounts.
+            </p>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-6">
-      <div className="mb-8">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Admin Users</h1>
-            <p className="mt-2 text-gray-600">
-              Manage admin user accounts and permissions
-            </p>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto space-y-8">
+        {/* Welcome Header */}
+        <div className="bg-gradient-to-r from-[#450209] to-[#5a0a0d] rounded-2xl shadow-xl p-8 text-white">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">Admin Users</h1>
+              <p className="text-white/80">
+                Manage admin user accounts and permissions
+              </p>
+            </div>
+            <button
+              onClick={() => setShowAddForm(true)}
+              className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white font-medium px-6 py-3 rounded-xl flex items-center space-x-2 transition-all duration-200"
+            >
+              <FiPlus className="h-4 w-4" />
+              <span>Add User</span>
+            </button>
           </div>
-          <button
-            onClick={() => setShowAddForm(true)}
-            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700"
-          >
-            <FiPlus className="mr-2 h-4 w-4" />
-            Add User
-          </button>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-blue-500 hover:shadow-xl transition-all duration-200 transform hover:scale-105">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Total Users</p>
+                <p className="text-3xl font-bold text-blue-600">
+                  {users.length}
+                </p>
+              </div>
+              <div className="bg-blue-100 p-3 rounded-full">
+                <FiUser className="w-6 h-6 text-blue-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-green-500 hover:shadow-xl transition-all duration-200 transform hover:scale-105">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">
+                  Active Users
+                </p>
+                <p className="text-3xl font-bold text-green-600">
+                  {users.filter((u) => u.isActive).length}
+                </p>
+              </div>
+              <div className="bg-green-100 p-3 rounded-full">
+                <FiUser className="w-6 h-6 text-green-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-purple-500 hover:shadow-xl transition-all duration-200 transform hover:scale-105">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">
+                  Super Admins
+                </p>
+                <p className="text-3xl font-bold text-purple-600">
+                  {users.filter((u) => u.role === "super_admin").length}
+                </p>
+              </div>
+              <div className="bg-purple-100 p-3 rounded-full">
+                <FiUser className="w-6 h-6 text-purple-600" />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Add User Form */}
       {showAddForm && (
-        <div className="bg-white rounded-lg shadow p-6 mb-6">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">
+        <div className="bg-white rounded-2xl shadow-lg p-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">
             Add New Admin User
           </h2>
           <form
@@ -215,7 +271,7 @@ export default function AdminUsersPage() {
                 onChange={(e) =>
                   setNewUser({ ...newUser, firstName: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#450209] focus:border-transparent"
                 required
               />
             </div>
@@ -229,7 +285,7 @@ export default function AdminUsersPage() {
                 onChange={(e) =>
                   setNewUser({ ...newUser, lastName: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#450209] focus:border-transparent"
                 required
               />
             </div>
@@ -243,7 +299,7 @@ export default function AdminUsersPage() {
                 onChange={(e) =>
                   setNewUser({ ...newUser, username: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#450209] focus:border-transparent"
                 required
               />
             </div>
@@ -257,7 +313,7 @@ export default function AdminUsersPage() {
                 onChange={(e) =>
                   setNewUser({ ...newUser, email: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#450209] focus:border-transparent"
                 required
               />
             </div>
@@ -271,7 +327,7 @@ export default function AdminUsersPage() {
                 onChange={(e) =>
                   setNewUser({ ...newUser, password: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#450209] focus:border-transparent"
                 required
               />
             </div>
@@ -287,23 +343,23 @@ export default function AdminUsersPage() {
                     role: e.target.value as "admin" | "super_admin",
                   })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#450209] focus:border-transparent"
               >
                 <option value="admin">Admin</option>
                 <option value="super_admin">Super Admin</option>
               </select>
             </div>
-            <div className="md:col-span-2 flex justify-end space-x-3">
+            <div className="md:col-span-2 flex justify-end space-x-3 pt-4">
               <button
                 type="button"
                 onClick={() => setShowAddForm(false)}
-                className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+                className="px-6 py-2 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 font-medium transition-all duration-200"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-red-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-red-700"
+                className="px-6 py-2 bg-gradient-to-r from-[#450209] to-[#5a0a0d] text-white rounded-xl hover:from-[#5a0a0d] hover:to-[#450209] font-medium transition-all duration-200 shadow-lg"
               >
                 Add User
               </button>

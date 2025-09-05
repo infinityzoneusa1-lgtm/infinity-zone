@@ -179,261 +179,278 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-        <p className="mt-2 text-gray-600">
-          Manage your account settings and preferences
-        </p>
-      </div>
-
-      {/* Success/Error Messages */}
-      {success && (
-        <div className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
-          <p className="text-sm text-green-600">{success}</p>
-        </div>
-      )}
-
-      {error && (
-        <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
-          <p className="text-sm text-red-600">{error}</p>
-        </div>
-      )}
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Profile Information */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold text-gray-900 flex items-center">
-              <FiUser className="mr-2 h-5 w-5" />
-              Profile Information
-            </h2>
-            <p className="text-sm text-gray-600 mt-1">
-              Update your email and personal details
-            </p>
-          </div>
-
-          <form onSubmit={handleProfileUpdate} className="space-y-4">
-            {/* Email Field */}
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto space-y-8">
+        {/* Welcome Header */}
+        <div className="bg-gradient-to-r from-[#450209] to-[#5a0a0d] rounded-2xl shadow-xl p-8 text-white">
+          <div className="flex justify-between items-center">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                <FiMail className="inline mr-1 h-4 w-4" />
-                Email Address
-              </label>
-              <input
-                type="email"
-                value={profileData.email}
-                onChange={(e) =>
-                  setProfileData({ ...profileData, email: e.target.value })
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                required
-              />
+              <h1 className="text-3xl font-bold mb-2">Settings</h1>
+              <p className="text-white/80">
+                Manage your account settings and preferences
+              </p>
             </div>
-
-            {/* First Name */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                First Name
-              </label>
-              <input
-                type="text"
-                value={profileData.firstName}
-                onChange={(e) =>
-                  setProfileData({ ...profileData, firstName: e.target.value })
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                required
-              />
-            </div>
-
-            {/* Last Name */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Last Name
-              </label>
-              <input
-                type="text"
-                value={profileData.lastName}
-                onChange={(e) =>
-                  setProfileData({ ...profileData, lastName: e.target.value })
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                required
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-              ) : (
-                <FiSave className="mr-2 h-4 w-4" />
-              )}
-              Update Profile
-            </button>
-          </form>
-        </div>
-
-        {/* Password Change */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold text-gray-900 flex items-center">
-              <FiLock className="mr-2 h-5 w-5" />
-              Change Password
-            </h2>
-            <p className="text-sm text-gray-600 mt-1">
-              Update your password to keep your account secure
-            </p>
-          </div>
-
-          <form onSubmit={handlePasswordUpdate} className="space-y-4">
-            {/* Current Password */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                <FiLock className="inline mr-1 h-4 w-4" />
-                Current Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPasswords.current ? "text" : "password"}
-                  value={passwordData.currentPassword}
-                  onChange={(e) =>
-                    setPasswordData({
-                      ...passwordData,
-                      currentPassword: e.target.value,
-                    })
-                  }
-                  className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Enter current password"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => togglePasswordVisibility("current")}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                >
-                  {showPasswords.current ? (
-                    <FiEyeOff className="h-4 w-4 text-gray-400 hover:text-gray-600" />
-                  ) : (
-                    <FiEye className="h-4 w-4 text-gray-400 hover:text-gray-600" />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            {/* New Password */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                New Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPasswords.new ? "text" : "password"}
-                  value={passwordData.newPassword}
-                  onChange={(e) =>
-                    setPasswordData({
-                      ...passwordData,
-                      newPassword: e.target.value,
-                    })
-                  }
-                  className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Enter new password"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => togglePasswordVisibility("new")}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                >
-                  {showPasswords.new ? (
-                    <FiEyeOff className="h-4 w-4 text-gray-400 hover:text-gray-600" />
-                  ) : (
-                    <FiEye className="h-4 w-4 text-gray-400 hover:text-gray-600" />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            {/* Confirm New Password */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Confirm New Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPasswords.confirm ? "text" : "password"}
-                  value={passwordData.confirmPassword}
-                  onChange={(e) =>
-                    setPasswordData({
-                      ...passwordData,
-                      confirmPassword: e.target.value,
-                    })
-                  }
-                  className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Confirm new password"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => togglePasswordVisibility("confirm")}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                >
-                  {showPasswords.confirm ? (
-                    <FiEyeOff className="h-4 w-4 text-gray-400 hover:text-gray-600" />
-                  ) : (
-                    <FiEye className="h-4 w-4 text-gray-400 hover:text-gray-600" />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-              ) : (
-                <FiLock className="mr-2 h-4 w-4" />
-              )}
-              Update Password
-            </button>
-          </form>
-        </div>
-      </div>
-
-      {/* Account Information */}
-      <div className="mt-8 bg-white rounded-lg shadow p-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">
-          Account Information
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-500">
-              Username
-            </label>
-            <p className="mt-1 text-sm text-gray-900">@{user?.username}</p>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-500">
-              Role
-            </label>
-            <p className="mt-1 text-sm text-gray-900">
-              <span
-                className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                  user?.role === "super_admin"
-                    ? "bg-purple-100 text-purple-800"
-                    : "bg-blue-100 text-blue-800"
-                }`}
-              >
+            <div className="bg-white/20 backdrop-blur-sm rounded-xl px-6 py-3">
+              <span className="text-white font-medium">
                 {user?.role === "super_admin" ? "Super Admin" : "Admin"}
               </span>
-            </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Success/Error Messages */}
+        {success && (
+          <div className="bg-green-50 border border-green-200 rounded-2xl p-4 shadow-lg">
+            <p className="text-sm text-green-600 font-medium">{success}</p>
+          </div>
+        )}
+
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-2xl p-4 shadow-lg">
+            <p className="text-sm text-red-600 font-medium">{error}</p>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Profile Information */}
+          <div className="bg-white rounded-2xl shadow-lg p-6">
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold text-gray-900 flex items-center">
+                <FiUser className="mr-2 h-5 w-5" />
+                Profile Information
+              </h2>
+              <p className="text-sm text-gray-600 mt-1">
+                Update your email and personal details
+              </p>
+            </div>
+
+            <form onSubmit={handleProfileUpdate} className="space-y-4">
+              {/* Email Field */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <FiMail className="inline mr-1 h-4 w-4" />
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  value={profileData.email}
+                  onChange={(e) =>
+                    setProfileData({ ...profileData, email: e.target.value })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#450209] focus:border-transparent"
+                  required
+                />
+              </div>
+
+              {/* First Name */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  First Name
+                </label>
+                <input
+                  type="text"
+                  value={profileData.firstName}
+                  onChange={(e) =>
+                    setProfileData({
+                      ...profileData,
+                      firstName: e.target.value,
+                    })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#450209] focus:border-transparent"
+                  required
+                />
+              </div>
+
+              {/* Last Name */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  value={profileData.lastName}
+                  onChange={(e) =>
+                    setProfileData({ ...profileData, lastName: e.target.value })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#450209] focus:border-transparent"
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-xl shadow-lg text-sm font-medium text-white bg-gradient-to-r from-[#450209] to-[#5a0a0d] hover:from-[#5a0a0d] hover:to-[#450209] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#450209] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+              >
+                {loading ? (
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                ) : (
+                  <FiSave className="mr-2 h-4 w-4" />
+                )}
+                Update Profile
+              </button>
+            </form>
+          </div>
+
+          {/* Password Change */}
+          <div className="bg-white rounded-2xl shadow-lg p-6">
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold text-gray-900 flex items-center">
+                <FiLock className="mr-2 h-5 w-5" />
+                Change Password
+              </h2>
+              <p className="text-sm text-gray-600 mt-1">
+                Update your password to keep your account secure
+              </p>
+            </div>
+
+            <form onSubmit={handlePasswordUpdate} className="space-y-4">
+              {/* Current Password */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <FiLock className="inline mr-1 h-4 w-4" />
+                  Current Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPasswords.current ? "text" : "password"}
+                    value={passwordData.currentPassword}
+                    onChange={(e) =>
+                      setPasswordData({
+                        ...passwordData,
+                        currentPassword: e.target.value,
+                      })
+                    }
+                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#450209] focus:border-transparent"
+                    placeholder="Enter current password"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => togglePasswordVisibility("current")}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  >
+                    {showPasswords.current ? (
+                      <FiEyeOff className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                    ) : (
+                      <FiEye className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* New Password */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  New Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPasswords.new ? "text" : "password"}
+                    value={passwordData.newPassword}
+                    onChange={(e) =>
+                      setPasswordData({
+                        ...passwordData,
+                        newPassword: e.target.value,
+                      })
+                    }
+                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#450209] focus:border-transparent"
+                    placeholder="Enter new password"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => togglePasswordVisibility("new")}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  >
+                    {showPasswords.new ? (
+                      <FiEyeOff className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                    ) : (
+                      <FiEye className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Confirm New Password */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Confirm New Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPasswords.confirm ? "text" : "password"}
+                    value={passwordData.confirmPassword}
+                    onChange={(e) =>
+                      setPasswordData({
+                        ...passwordData,
+                        confirmPassword: e.target.value,
+                      })
+                    }
+                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#450209] focus:border-transparent"
+                    placeholder="Confirm new password"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => togglePasswordVisibility("confirm")}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  >
+                    {showPasswords.confirm ? (
+                      <FiEyeOff className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                    ) : (
+                      <FiEye className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-xl shadow-lg text-sm font-medium text-white bg-gradient-to-r from-[#450209] to-[#5a0a0d] hover:from-[#5a0a0d] hover:to-[#450209] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#450209] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+              >
+                {loading ? (
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                ) : (
+                  <FiLock className="mr-2 h-4 w-4" />
+                )}
+                Update Password
+              </button>
+            </form>
+          </div>
+        </div>
+
+        {/* Account Information */}
+        <div className="bg-white rounded-2xl shadow-lg p-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">
+            Account Information
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-gray-50 rounded-xl p-4">
+              <label className="block text-sm font-medium text-gray-500">
+                Username
+              </label>
+              <p className="mt-1 text-lg font-medium text-gray-900">
+                @{user?.username}
+              </p>
+            </div>
+            <div className="bg-gray-50 rounded-xl p-4">
+              <label className="block text-sm font-medium text-gray-500">
+                Role
+              </label>
+              <p className="mt-2">
+                <span
+                  className={`inline-flex items-center px-3 py-1 text-sm font-medium rounded-full ${
+                    user?.role === "super_admin"
+                      ? "bg-purple-100 text-purple-800"
+                      : "bg-blue-100 text-blue-800"
+                  }`}
+                >
+                  {user?.role === "super_admin" ? "Super Admin" : "Admin"}
+                </span>
+              </p>
+            </div>
           </div>
         </div>
       </div>

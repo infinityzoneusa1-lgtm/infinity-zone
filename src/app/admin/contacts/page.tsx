@@ -121,46 +121,101 @@ export default function AdminContacts() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-600"></div>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-[#450209]"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto space-y-8">
+        {/* Welcome Header */}
+        <div className="bg-gradient-to-r from-[#450209] to-[#5a0a0d] rounded-2xl shadow-xl p-8 text-white">
+          <div className="flex justify-between items-center">
             <div>
               <Link
                 href="/admin/dashboard"
-                className="text-purple-600 hover:text-purple-700 mb-2 inline-block"
+                className="text-white/80 hover:text-white mb-2 inline-block transition-colors duration-200"
               >
                 ← Back to Dashboard
               </Link>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Contact Messages
-              </h1>
+              <h1 className="text-3xl font-bold mb-2">Contact Messages</h1>
+              <p className="text-white/80">
+                Manage and respond to customer inquiries
+              </p>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="bg-yellow-50 px-4 py-2 rounded-md">
-                <span className="text-yellow-800 font-medium">
-                  Unread: {unreadCount}
-                </span>
+            <div className="bg-white/20 backdrop-blur-sm rounded-xl px-6 py-3">
+              <span className="text-white font-medium">
+                Unread: {unreadCount}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-blue-500 hover:shadow-xl transition-all duration-200 transform hover:scale-105">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">
+                  Total Messages
+                </p>
+                <p className="text-3xl font-bold text-blue-600">
+                  {contacts.length}
+                </p>
+              </div>
+              <div className="bg-blue-100 p-3 rounded-full">
+                <FiMail className="w-6 h-6 text-blue-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-yellow-500 hover:shadow-xl transition-all duration-200 transform hover:scale-105">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Unread</p>
+                <p className="text-3xl font-bold text-yellow-600">
+                  {unreadCount}
+                </p>
+              </div>
+              <div className="bg-yellow-100 p-3 rounded-full">
+                <FiMessageSquare className="w-6 h-6 text-yellow-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-green-500 hover:shadow-xl transition-all duration-200 transform hover:scale-105">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Read</p>
+                <p className="text-3xl font-bold text-green-600">
+                  {
+                    contacts.filter(
+                      (c) =>
+                        c.status === "read" ||
+                        c.status === "responded" ||
+                        c.status === "resolved"
+                    ).length
+                  }
+                </p>
+              </div>
+              <div className="bg-green-100 p-3 rounded-full">
+                <FiUser className="w-6 h-6 text-green-600" />
               </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Messages Table */}
-        <div className="bg-white shadow rounded-lg overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h3 className="text-lg font-medium text-gray-900">
+              Contact Messages
+            </h3>
+          </div>
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+              <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Contact
@@ -184,7 +239,7 @@ export default function AdminContacts() {
                   contacts.map((contact) => (
                     <tr
                       key={contact._id}
-                      className={`hover:bg-gray-50 cursor-pointer ${
+                      className={`hover:bg-gradient-to-r hover:from-red-50 hover:to-pink-50 transition-all duration-200 cursor-pointer ${
                         contact.status === "new" ? "bg-blue-50" : ""
                       }`}
                       onClick={() => openContactModal(contact)}
@@ -195,17 +250,15 @@ export default function AdminContacts() {
                             <div
                               className={`h-10 w-10 rounded-full flex items-center justify-center ${
                                 contact.status === "new"
-                                  ? "bg-blue-100"
-                                  : "bg-gray-100"
+                                  ? "bg-gradient-to-r from-blue-500 to-blue-600"
+                                  : "bg-gradient-to-r from-[#450209] to-[#5a0a0d]"
                               }`}
                             >
-                              <FiUser
-                                className={`h-5 w-5 ${
-                                  contact.status === "new"
-                                    ? "text-blue-600"
-                                    : "text-gray-600"
-                                }`}
-                              />
+                              <span className="text-white font-medium text-sm">
+                                {contact.firstName
+                                  ? contact.firstName[0].toUpperCase()
+                                  : "N"}
+                              </span>
                             </div>
                           </div>
                           <div className="ml-4">
@@ -239,7 +292,7 @@ export default function AdminContacts() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
-                          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                             contact.status === "read" ||
                             contact.status === "responded" ||
                             contact.status === "resolved"
@@ -252,7 +305,7 @@ export default function AdminContacts() {
                           {contact.status === "new" ? "Unread" : contact.status}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         <div className="flex items-center">
                           <FiCalendar className="mr-1 h-3 w-3" />
                           {new Date(contact.createdAt).toLocaleDateString()}
@@ -265,20 +318,20 @@ export default function AdminContacts() {
                               e.stopPropagation();
                               openContactModal(contact);
                             }}
-                            className="text-purple-600 hover:text-purple-900 p-1"
+                            className="text-[#450209] hover:text-[#5a0a0d] font-medium transition-colors duration-200"
                             title="View Message"
                           >
-                            <FiEye />
+                            View
                           </button>
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
                               deleteContact(contact._id);
                             }}
-                            className="text-red-600 hover:text-red-900 p-1"
+                            className="text-red-600 hover:text-red-700 font-medium transition-colors duration-200"
                             title="Delete Message"
                           >
-                            <FiTrash2 />
+                            Delete
                           </button>
                         </div>
                       </td>
@@ -298,71 +351,19 @@ export default function AdminContacts() {
             </table>
           </div>
         </div>
-
-        {/* Summary Cards */}
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center">
-              <FiMail className="h-8 w-8 text-blue-600" />
-              <div className="ml-4">
-                <h3 className="text-lg font-medium text-gray-900">
-                  Total Messages
-                </h3>
-                <p className="text-2xl font-bold text-blue-600">
-                  {contacts.length}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center">
-              <div className="h-8 w-8 rounded-full bg-yellow-100 flex items-center justify-center">
-                <FiMessageSquare className="h-4 w-4 text-yellow-600" />
-              </div>
-              <div className="ml-4">
-                <h3 className="text-lg font-medium text-gray-900">Unread</h3>
-                <p className="text-2xl font-bold text-yellow-600">
-                  {unreadCount}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex items-center">
-              <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
-                <div className="h-3 w-3 rounded-full bg-green-600"></div>
-              </div>
-              <div className="ml-4">
-                <h3 className="text-lg font-medium text-gray-900">Read</h3>
-                <p className="text-2xl font-bold text-green-600">
-                  {
-                    contacts.filter(
-                      (c) =>
-                        c.status === "read" ||
-                        c.status === "responded" ||
-                        c.status === "resolved"
-                    ).length
-                  }
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Contact Details Modal */}
       {showModal && selectedContact && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="relative w-full max-w-2xl max-h-[90vh] bg-white rounded-lg shadow-xl overflow-hidden">
+          <div className="relative w-full max-w-2xl max-h-[90vh] bg-white rounded-2xl shadow-2xl overflow-hidden">
             <div className="flex justify-between items-center p-6 border-b bg-white sticky top-0 z-10">
-              <h3 className="text-lg font-medium text-gray-900">
+              <h3 className="text-xl font-semibold text-gray-900">
                 Contact Message Details
               </h3>
               <button
                 onClick={() => setShowModal(false)}
-                className="text-gray-400 hover:text-gray-600 text-2xl leading-none"
+                className="text-gray-400 hover:text-gray-600 text-2xl font-bold transition-colors duration-200"
               >
                 ×
               </button>
@@ -536,13 +537,13 @@ export default function AdminContacts() {
             <div className="flex justify-end space-x-4 p-6 border-t bg-white sticky bottom-0">
               <button
                 onClick={() => setShowModal(false)}
-                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                className="px-6 py-2 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 font-medium transition-all duration-200"
               >
                 Close
               </button>
               <button
                 onClick={() => deleteContact(selectedContact._id)}
-                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                className="px-6 py-2 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl hover:from-red-700 hover:to-red-800 font-medium transition-all duration-200 shadow-lg"
               >
                 Delete Message
               </button>
