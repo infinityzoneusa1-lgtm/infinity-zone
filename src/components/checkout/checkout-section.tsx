@@ -28,9 +28,20 @@ export function CheckoutSection() {
     fullName: "",
     email: "",
     phone: "",
+    address: "",
     country: "",
     city: "",
     zipcode: "",
+    agreeToTerms: false,
+  });
+  const [touched, setTouched] = useState({
+    fullName: false,
+    email: false,
+    phone: false,
+    address: false,
+    country: false,
+    city: false,
+    zipcode: false,
     agreeToTerms: false,
   });
 
@@ -41,10 +52,68 @@ export function CheckoutSection() {
     }));
   };
 
+  const handleFieldBlur = (field: string) => {
+    setTouched((prev) => ({
+      ...prev,
+      [field]: true,
+    }));
+  };
+
+  const getFieldError = (field: keyof typeof formData) => {
+    if (!touched[field]) return null;
+    
+    switch (field) {
+      case 'fullName':
+        return !formData.fullName?.trim() ? 'Full name is required' : null;
+      case 'email':
+        return !formData.email?.trim() 
+          ? 'Email is required' 
+          : !/\S+@\S+\.\S+/.test(formData.email) 
+          ? 'Please enter a valid email' 
+          : null;
+      case 'phone':
+        return !formData.phone?.trim() 
+          ? 'Phone number is required' 
+          : formData.phone.length < 10 
+          ? 'Phone number must be at least 10 digits' 
+          : null;
+      case 'address':
+        return !formData.address?.trim() ? 'Address is required' : null;
+      case 'country':
+        return !formData.country?.trim() ? 'Country is required' : null;
+      case 'city':
+        return !formData.city?.trim() ? 'City is required' : null;
+      case 'zipcode':
+        return !formData.zipcode?.trim() ? 'ZIP code is required' : null;
+      case 'agreeToTerms':
+        return !formData.agreeToTerms ? 'You must agree to the terms and conditions' : null;
+      default:
+        return null;
+    }
+  };
+
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.agreeToTerms || cartItems.length === 0) {
+    // Validate all required fields
+    const requiredFields = ['fullName', 'email', 'phone', 'address', 'country', 'city', 'zipcode'] as const;
+    const missingFields = requiredFields.filter(field => !formData[field]?.trim());
+    
+    if (missingFields.length > 0) {
+      setErrorMessage(`Please fill in all required fields: ${missingFields.join(', ')}`);
+      setShowFailurePopup(true);
+      return;
+    }
+
+    if (!formData.agreeToTerms) {
+      setErrorMessage("Please agree to the Terms and Conditions to continue.");
+      setShowFailurePopup(true);
+      return;
+    }
+
+    if (cartItems.length === 0) {
+      setErrorMessage("Your cart is empty. Please add items to continue.");
+      setShowFailurePopup(true);
       return;
     }
 
@@ -109,9 +178,14 @@ export function CheckoutSection() {
                     onChange={(e) =>
                       handleInputChange("fullName", e.target.value)
                     }
-                    className="w-full border border-gray-300"
+                    onBlur={() => handleFieldBlur("fullName")}
+                    className={`w-full border ${getFieldError('fullName') ? 'border-red-500' : 'border-gray-300'}`}
                     required
+                    minLength={2}
                   />
+                  {getFieldError('fullName') && (
+                    <p className="text-red-500 text-xs mt-1">{getFieldError('fullName')}</p>
+                  )}
                 </div>
 
                 {/* Email */}
@@ -128,9 +202,14 @@ export function CheckoutSection() {
                     placeholder="Email"
                     value={formData.email}
                     onChange={(e) => handleInputChange("email", e.target.value)}
-                    className="w-full border border-gray-300"
+                    onBlur={() => handleFieldBlur("email")}
+                    className={`w-full border ${getFieldError('email') ? 'border-red-500' : 'border-gray-300'}`}
                     required
+                    minLength={5}
                   />
+                  {getFieldError('email') && (
+                    <p className="text-red-500 text-xs mt-1">{getFieldError('email')}</p>
+                  )}
                 </div>
 
                 {/* Phone */}
@@ -147,9 +226,38 @@ export function CheckoutSection() {
                     placeholder="Phone"
                     value={formData.phone}
                     onChange={(e) => handleInputChange("phone", e.target.value)}
-                    className="w-full border border-gray-300"
+                    onBlur={() => handleFieldBlur("phone")}
+                    className={`w-full border ${getFieldError('phone') ? 'border-red-500' : 'border-gray-300'}`}
                     required
+                    minLength={10}
                   />
+                  {getFieldError('phone') && (
+                    <p className="text-red-500 text-xs mt-1">{getFieldError('phone')}</p>
+                  )}
+                </div>
+
+                {/* Address */}
+                <div>
+                  <Label
+                    htmlFor="address"
+                    className="text-sm font-medium text-gray-700 mb-1 block"
+                  >
+                    Street Address *
+                  </Label>
+                  <Input
+                    id="address"
+                    type="text"
+                    placeholder="Street Address"
+                    value={formData.address}
+                    onChange={(e) => handleInputChange("address", e.target.value)}
+                    onBlur={() => handleFieldBlur("address")}
+                    className={`w-full border ${getFieldError('address') ? 'border-red-500' : 'border-gray-300'}`}
+                    required
+                    minLength={5}
+                  />
+                  {getFieldError('address') && (
+                    <p className="text-red-500 text-xs mt-1">{getFieldError('address')}</p>
+                  )}
                 </div>
 
                 {/* Country */}
@@ -161,12 +269,15 @@ export function CheckoutSection() {
                     Country *
                   </Label>
                   <Select
-                    onValueChange={(value) =>
-                      handleInputChange("country", value)
-                    }
+                    onValueChange={(value) => {
+                      handleInputChange("country", value);
+                      handleFieldBlur("country");
+                    }}
+                    value={formData.country}
+                    required
                   >
-                    <SelectTrigger className="w-full border border-gray-300">
-                      <SelectValue placeholder="United States" />
+                    <SelectTrigger className={`w-full border ${getFieldError('country') ? 'border-red-500' : 'border-gray-300'}`}>
+                      <SelectValue placeholder="Select Country" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="us">United States</SelectItem>
@@ -179,6 +290,9 @@ export function CheckoutSection() {
                       <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
                   </Select>
+                  {getFieldError('country') && (
+                    <p className="text-red-500 text-xs mt-1">{getFieldError('country')}</p>
+                  )}
                 </div>
 
                 {/* City */}
@@ -195,9 +309,14 @@ export function CheckoutSection() {
                     placeholder="City/Location"
                     value={formData.city}
                     onChange={(e) => handleInputChange("city", e.target.value)}
-                    className="w-full border border-gray-300"
+                    onBlur={() => handleFieldBlur("city")}
+                    className={`w-full border ${getFieldError('city') ? 'border-red-500' : 'border-gray-300'}`}
                     required
+                    minLength={2}
                   />
+                  {getFieldError('city') && (
+                    <p className="text-red-500 text-xs mt-1">{getFieldError('city')}</p>
+                  )}
                 </div>
 
                 {/* Zip Code */}
@@ -216,24 +335,35 @@ export function CheckoutSection() {
                     onChange={(e) =>
                       handleInputChange("zipcode", e.target.value)
                     }
-                    className="w-full border border-gray-300"
+                    onBlur={() => handleFieldBlur("zipcode")}
+                    className={`w-full border ${getFieldError('zipcode') ? 'border-red-500' : 'border-gray-300'}`}
                     required
+                    minLength={3}
                   />
+                  {getFieldError('zipcode') && (
+                    <p className="text-red-500 text-xs mt-1">{getFieldError('zipcode')}</p>
+                  )}
                 </div>
 
                 {/* Terms Agreement */}
-                <div className="flex items-start space-x-2 pt-4">
-                  <Checkbox
-                    id="agreeToTerms"
-                    checked={formData.agreeToTerms}
-                    onCheckedChange={(checked) =>
-                      handleInputChange("agreeToTerms", checked as boolean)
-                    }
-                    className="mt-1"
-                  />
-                  <span className="text-xs text-gray-600 leading-relaxed">
-                    I have read and agree to the Terms and Conditions
-                  </span>
+                <div className="pt-4">
+                  <div className="flex items-start space-x-2">
+                    <Checkbox
+                      id="agreeToTerms"
+                      checked={formData.agreeToTerms}
+                      onCheckedChange={(checked) => {
+                        handleInputChange("agreeToTerms", checked as boolean);
+                        handleFieldBlur("agreeToTerms");
+                      }}
+                      className="mt-1"
+                    />
+                    <span className="text-xs text-gray-600 leading-relaxed">
+                      I have read and agree to the Terms and Conditions *
+                    </span>
+                  </div>
+                  {getFieldError('agreeToTerms') && (
+                    <p className="text-red-500 text-xs mt-1 ml-6">{getFieldError('agreeToTerms')}</p>
+                  )}
                 </div>
               </form>
             </div>
@@ -337,7 +467,17 @@ export function CheckoutSection() {
                     type="submit"
                     onClick={handleFormSubmit}
                     className="w-full bg-red-800 hover:bg-red-900 text-white font-medium py-3 px-6 rounded-md transition-colors mt-6 disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled={!formData.agreeToTerms || cartItems.length === 0}
+                    disabled={
+                      !formData.agreeToTerms || 
+                      cartItems.length === 0 ||
+                      !formData.fullName?.trim() ||
+                      !formData.email?.trim() ||
+                      !formData.phone?.trim() ||
+                      !formData.address?.trim() ||
+                      !formData.country?.trim() ||
+                      !formData.city?.trim() ||
+                      !formData.zipcode?.trim()
+                    }
                   >
                     Continue to Payment
                   </Button>

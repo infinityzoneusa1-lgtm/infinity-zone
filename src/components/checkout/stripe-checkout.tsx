@@ -21,6 +21,7 @@ interface OrderDetails {
     fullName: string;
     email: string;
     phone: string;
+    address: string;
     country: string;
     city: string;
     zipcode: string;
