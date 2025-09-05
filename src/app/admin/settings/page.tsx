@@ -18,7 +18,8 @@ const API_BASE_URL =
 
 export default function SettingsPage() {
   const { user, logout, updateUser } = useAuth();
-  const [loading, setLoading] = useState(false);
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [passwordLoading, setPasswordLoading] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
 
@@ -66,7 +67,7 @@ export default function SettingsPage() {
 
   const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setProfileLoading(true);
     setError("");
     setSuccess("");
 
@@ -106,26 +107,26 @@ export default function SettingsPage() {
       console.error("Profile update error:", error);
       setError("Unable to connect to server. Please try again.");
     } finally {
-      setLoading(false);
+      setProfileLoading(false);
     }
   };
 
   const handlePasswordUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setPasswordLoading(true);
     setError("");
     setSuccess("");
 
     // Validate passwords
     if (passwordData.newPassword !== passwordData.confirmPassword) {
       setError("New passwords do not match");
-      setLoading(false);
+      setPasswordLoading(false);
       return;
     }
 
     if (passwordData.newPassword.length < 6) {
       setError("New password must be at least 6 characters long");
-      setLoading(false);
+      setPasswordLoading(false);
       return;
     }
 
@@ -167,7 +168,7 @@ export default function SettingsPage() {
       console.error("Password update error:", error);
       setError("Unable to connect to server. Please try again.");
     } finally {
-      setLoading(false);
+      setPasswordLoading(false);
     }
   };
 
@@ -279,10 +280,10 @@ export default function SettingsPage() {
 
               <button
                 type="submit"
-                disabled={loading}
+                disabled={profileLoading}
                 className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-xl shadow-lg text-sm font-medium text-white bg-gradient-to-r from-[#450209] to-[#5a0a0d] hover:from-[#5a0a0d] hover:to-[#450209] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#450209] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               >
-                {loading ? (
+                {profileLoading ? (
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                 ) : (
                   <FiSave className="mr-2 h-4 w-4" />
@@ -407,10 +408,10 @@ export default function SettingsPage() {
 
               <button
                 type="submit"
-                disabled={loading}
+                disabled={passwordLoading}
                 className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-xl shadow-lg text-sm font-medium text-white bg-gradient-to-r from-[#450209] to-[#5a0a0d] hover:from-[#5a0a0d] hover:to-[#450209] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#450209] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               >
-                {loading ? (
+                {passwordLoading ? (
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                 ) : (
                   <FiLock className="mr-2 h-4 w-4" />
