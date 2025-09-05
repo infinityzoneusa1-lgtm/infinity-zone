@@ -81,7 +81,12 @@ export default function AdminDashboard() {
         fetch(`${API_BASE}/products?admin=true`).catch(() => ({
           ok: false,
         })),
-        fetch(`${API_BASE}/orders`).catch(() => ({ ok: false })),
+        fetch(`${API_BASE}/admin/orders`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+            "Content-Type": "application/json",
+          },
+        }).catch(() => ({ ok: false })),
         fetch(`${API_BASE}/vendors`).catch(() => ({ ok: false })),
         fetch(`${API_BASE}/bloggers`).catch(() => ({
           ok: false,
@@ -100,8 +105,9 @@ export default function AdminDashboard() {
 
       const products =
         productsRes.ok && "json" in productsRes ? await productsRes.json() : [];
-      const orders =
-        ordersRes.ok && "json" in ordersRes ? await ordersRes.json() : [];
+      const ordersData =
+        ordersRes.ok && "json" in ordersRes ? await ordersRes.json() : {};
+      const orders = ordersData.success ? ordersData.data : [];
       const vendors =
         vendorRes.ok && "json" in vendorRes ? await vendorRes.json() : [];
       const bloggers =
@@ -201,93 +207,97 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 md:space-y-8">
       {/* Welcome Header */}
-      <div className="bg-gradient-to-r from-[#450209] to-[#5a0a0d] rounded-2xl shadow-xl p-8 text-white">
-        <div className="flex justify-between items-center">
+      <div className="bg-gradient-to-r from-[#450209] to-[#5a0a0d] rounded-2xl shadow-xl p-4 md:p-8 text-white">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold mb-2">
+            <h1 className="text-2xl md:text-3xl font-bold mb-2">
               Welcome to Admin Dashboard
             </h1>
-            <p className="text-white/80">
+            <p className="text-white/80 text-sm md:text-base">
               Monitor and manage your business operations
             </p>
           </div>
           <Link
             href="/admin/products/add"
-            className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-all duration-200 transform hover:scale-105"
+            className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-4 md:px-6 py-2 md:py-3 rounded-xl flex items-center gap-2 transition-all duration-200 transform hover:scale-105 text-sm md:text-base"
           >
-            <FiPlus className="w-5 h-5" /> Add Product
+            <FiPlus className="w-4 h-4 md:w-5 md:h-5" /> Add Product
           </Link>
         </div>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-green-500 hover:shadow-xl transition-all duration-200 transform hover:scale-105">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+        <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 border-l-4 border-green-500 hover:shadow-xl transition-all duration-200 transform hover:scale-105">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">
+              <p className="text-xs md:text-sm font-medium text-gray-600 mb-1">
                 Total Products
               </p>
-              <p className="text-3xl font-bold text-gray-900">
+              <p className="text-2xl md:text-3xl font-bold text-gray-900">
                 {stats.products}
               </p>
               <p className="text-xs text-green-600 mt-1">Active inventory</p>
             </div>
-            <div className="bg-green-100 p-4 rounded-xl">
-              <FiShoppingBag className="h-8 w-8 text-green-600" />
+            <div className="bg-green-100 p-3 md:p-4 rounded-xl">
+              <FiShoppingBag className="h-6 w-6 md:h-8 md:w-8 text-green-600" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-[#450209] hover:shadow-xl transition-all duration-200 transform hover:scale-105">
+        <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 border-l-4 border-[#450209] hover:shadow-xl transition-all duration-200 transform hover:scale-105">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">
+              <p className="text-xs md:text-sm font-medium text-gray-600 mb-1">
                 Total Orders
               </p>
-              <p className="text-3xl font-bold text-gray-900">{stats.orders}</p>
+              <p className="text-2xl md:text-3xl font-bold text-gray-900">
+                {stats.orders}
+              </p>
               <p className="text-xs text-[#450209] mt-1">Customer orders</p>
             </div>
-            <div className="bg-red-100 p-4 rounded-xl">
-              <FiFileText className="h-8 w-8 text-[#450209]" />
+            <div className="bg-red-100 p-3 md:p-4 rounded-xl">
+              <FiFileText className="h-6 w-6 md:h-8 md:w-8 text-[#450209]" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-orange-500 hover:shadow-xl transition-all duration-200 transform hover:scale-105">
+        <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 border-l-4 border-orange-500 hover:shadow-xl transition-all duration-200 transform hover:scale-105 sm:col-span-2 lg:col-span-1">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">Messages</p>
-              <p className="text-3xl font-bold text-gray-900">
+              <p className="text-xs md:text-sm font-medium text-gray-600 mb-1">
+                Messages
+              </p>
+              <p className="text-2xl md:text-3xl font-bold text-gray-900">
                 {stats.contacts + stats.professionals}
               </p>
               <p className="text-xs text-orange-600 mt-1">Contact inquiries</p>
             </div>
-            <div className="bg-orange-100 p-4 rounded-xl">
-              <FiMail className="h-8 w-8 text-orange-600" />
+            <div className="bg-orange-100 p-3 md:p-4 rounded-xl">
+              <FiMail className="h-6 w-6 md:h-8 md:w-8 text-orange-600" />
             </div>
           </div>
         </div>
       </div>
 
       {/* Applications Overview */}
-      <div className="bg-white rounded-2xl shadow-lg p-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center">
-          <FiFileText className="mr-3 text-[#450209]" />
+      <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6">
+        <h2 className="text-lg md:text-xl font-semibold text-gray-900 mb-4 md:mb-6 flex items-center">
+          <FiFileText className="mr-2 md:mr-3 text-[#450209]" />
           Applications Overview
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
           <Link
             href="/admin/vendors"
-            className="group bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl p-4 hover:from-indigo-100 hover:to-indigo-200 transition-all duration-200 transform hover:scale-105"
+            className="group bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl p-3 md:p-4 hover:from-indigo-100 hover:to-indigo-200 transition-all duration-200 transform hover:scale-105"
           >
             <div className="text-center">
-              <div className="text-2xl font-bold text-indigo-600 group-hover:text-indigo-700">
+              <div className="text-xl md:text-2xl font-bold text-indigo-600 group-hover:text-indigo-700">
                 {stats.applications.vendors}
               </div>
-              <div className="text-sm text-indigo-600 font-medium">
+              <div className="text-xs md:text-sm text-indigo-600 font-medium">
                 Vendor Apps
               </div>
             </div>
@@ -295,13 +305,13 @@ export default function AdminDashboard() {
 
           <Link
             href="/admin/bloggers"
-            className="group bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 hover:from-green-100 hover:to-green-200 transition-all duration-200 transform hover:scale-105"
+            className="group bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-3 md:p-4 hover:from-green-100 hover:to-green-200 transition-all duration-200 transform hover:scale-105"
           >
             <div className="text-center">
-              <div className="text-2xl font-bold text-green-600 group-hover:text-green-700">
+              <div className="text-xl md:text-2xl font-bold text-green-600 group-hover:text-green-700">
                 {stats.applications.bloggers}
               </div>
-              <div className="text-sm text-green-600 font-medium">
+              <div className="text-xs md:text-sm text-green-600 font-medium">
                 Blogger Apps
               </div>
             </div>
@@ -309,13 +319,13 @@ export default function AdminDashboard() {
 
           <Link
             href="/admin/content-creators"
-            className="group bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 hover:from-blue-100 hover:to-blue-200 transition-all duration-200 transform hover:scale-105"
+            className="group bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-3 md:p-4 hover:from-blue-100 hover:to-blue-200 transition-all duration-200 transform hover:scale-105"
           >
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600 group-hover:text-blue-700">
+              <div className="text-xl md:text-2xl font-bold text-blue-600 group-hover:text-blue-700">
                 {stats.applications.contentCreators}
               </div>
-              <div className="text-sm text-blue-600 font-medium">
+              <div className="text-xs md:text-sm text-blue-600 font-medium">
                 Content Creators
               </div>
             </div>
@@ -323,13 +333,13 @@ export default function AdminDashboard() {
 
           <Link
             href="/admin/internships"
-            className="group bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4 hover:from-purple-100 hover:to-purple-200 transition-all duration-200 transform hover:scale-105"
+            className="group bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-3 md:p-4 hover:from-purple-100 hover:to-purple-200 transition-all duration-200 transform hover:scale-105"
           >
             <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600 group-hover:text-purple-700">
+              <div className="text-xl md:text-2xl font-bold text-purple-600 group-hover:text-purple-700">
                 {stats.internships}
               </div>
-              <div className="text-sm text-purple-600 font-medium">
+              <div className="text-xs md:text-sm text-purple-600 font-medium">
                 Internship Apps
               </div>
             </div>
@@ -337,13 +347,13 @@ export default function AdminDashboard() {
 
           <Link
             href="/admin/professionals"
-            className="group bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl p-4 hover:from-yellow-100 hover:to-yellow-200 transition-all duration-200 transform hover:scale-105"
+            className="group bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl p-3 md:p-4 hover:from-yellow-100 hover:to-yellow-200 transition-all duration-200 transform hover:scale-105"
           >
             <div className="text-center">
-              <div className="text-2xl font-bold text-yellow-600 group-hover:text-yellow-700">
+              <div className="text-xl md:text-2xl font-bold text-yellow-600 group-hover:text-yellow-700">
                 {stats.professionals}
               </div>
-              <div className="text-sm text-yellow-600 font-medium">
+              <div className="text-xs md:text-sm text-yellow-600 font-medium">
                 Professional Contacts
               </div>
             </div>
@@ -351,35 +361,35 @@ export default function AdminDashboard() {
 
           <Link
             href="/admin/contacts"
-            className="group bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-4 hover:from-red-100 hover:to-red-200 transition-all duration-200 transform hover:scale-105"
+            className="group bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-3 md:p-4 hover:from-red-100 hover:to-red-200 transition-all duration-200 transform hover:scale-105"
           >
             <div className="text-center">
-              <div className="text-2xl font-bold text-red-600 group-hover:text-red-700">
+              <div className="text-xl md:text-2xl font-bold text-red-600 group-hover:text-red-700">
                 {stats.contacts}
               </div>
-              <div className="text-sm text-red-600 font-medium">
+              <div className="text-xs md:text-sm text-red-600 font-medium">
                 Contact Messages
               </div>
             </div>
           </Link>
 
-          <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-4">
+          <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-3 md:p-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-gray-600">
+              <div className="text-xl md:text-2xl font-bold text-gray-600">
                 {stats.applications.vendors +
                   stats.applications.bloggers +
                   stats.applications.contentCreators +
                   stats.internships}
               </div>
-              <div className="text-sm text-gray-600 font-medium">
+              <div className="text-xs md:text-sm text-gray-600 font-medium">
                 Total Applications
               </div>
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-[#450209] to-[#5a0a0d] rounded-xl p-4 text-white">
+          <div className="bg-gradient-to-br from-[#450209] to-[#5a0a0d] rounded-xl p-3 md:p-4 text-white">
             <div className="text-center">
-              <div className="text-2xl font-bold">
+              <div className="text-xl md:text-2xl font-bold">
                 {stats.contacts +
                   stats.professionals +
                   stats.applications.vendors +
@@ -387,7 +397,7 @@ export default function AdminDashboard() {
                   stats.applications.contentCreators +
                   stats.internships}
               </div>
-              <div className="text-sm font-medium opacity-90">
+              <div className="text-xs md:text-sm font-medium opacity-90">
                 Total Submissions
               </div>
             </div>
@@ -397,47 +407,47 @@ export default function AdminDashboard() {
 
       {/* Recent Products */}
       <div className="bg-white rounded-2xl shadow-lg">
-        <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-          <h2 className="text-xl font-semibold text-gray-900 flex items-center">
-            <FiShoppingBag className="mr-3 text-[#450209]" />
+        <div className="px-4 md:px-6 py-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <h2 className="text-lg md:text-xl font-semibold text-gray-900 flex items-center">
+            <FiShoppingBag className="mr-2 md:mr-3 text-[#450209]" />
             Recent Products
           </h2>
           <Link
             href="/admin/products"
-            className="text-[#450209] hover:text-[#350107] font-medium transition-colors duration-200"
+            className="text-[#450209] hover:text-[#350107] font-medium transition-colors duration-200 text-sm md:text-base"
           >
             View All →
           </Link>
         </div>
-        <div className="p-6">
+        <div className="p-4 md:p-6">
           {recentProducts.length > 0 ? (
-            <div className="space-y-4">
+            <div className="space-y-3 md:space-y-4">
               {recentProducts.map((product) => (
                 <div
                   key={product._id}
-                  className="flex items-center justify-between p-4 border border-gray-100 rounded-xl hover:shadow-md transition-all duration-200 hover:border-[#450209]/20"
+                  className="flex flex-col sm:flex-row sm:items-center justify-between p-3 md:p-4 border border-gray-100 rounded-xl hover:shadow-md transition-all duration-200 hover:border-[#450209]/20 gap-3"
                 >
-                  <div className="flex items-center space-x-4">
-                    <div className="relative">
+                  <div className="flex items-center space-x-3 md:space-x-4">
+                    <div className="relative flex-shrink-0">
                       <img
                         src={product.images?.[0]?.url || "/placeholder.jpg"}
                         alt={product.title}
-                        className="w-16 h-16 rounded-xl object-cover"
+                        className="w-12 h-12 md:w-16 md:h-16 rounded-xl object-cover"
                       />
-                      <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                      <div className="absolute -top-1 -right-1 w-5 h-5 md:w-6 md:h-6 bg-green-500 rounded-full flex items-center justify-center">
                         <span className="text-white text-xs font-bold">
                           {product.inventory?.stock || 0}
                         </span>
                       </div>
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900 text-lg">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-semibold text-gray-900 text-sm md:text-lg truncate">
                         {product.title}
                       </h3>
-                      <p className="text-[#450209] font-bold text-lg">
+                      <p className="text-[#450209] font-bold text-sm md:text-lg">
                         ${product.price}
                       </p>
-                      <div className="flex items-center space-x-2 mt-1">
+                      <div className="flex flex-wrap items-center gap-1 md:gap-2 mt-1">
                         <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
                           {product.category?.name || "No Category"}
                         </span>
@@ -447,39 +457,39 @@ export default function AdminDashboard() {
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-1 md:space-x-2 self-end sm:self-center">
                     <Link
                       href={`/admin/products/edit/${product._id}`}
                       className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all duration-200"
                       title="Edit Product"
                     >
-                      <FiEdit className="w-5 h-5" />
+                      <FiEdit className="w-4 h-4 md:w-5 md:h-5" />
                     </Link>
                     <button
                       onClick={() => deleteProduct(product._id)}
                       className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200"
                       title="Delete Product"
                     >
-                      <FiTrash2 className="w-5 h-5" />
+                      <FiTrash2 className="w-4 h-4 md:w-5 md:h-5" />
                     </button>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="text-center py-12">
-              <div className="bg-gray-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                <FiShoppingBag className="h-10 w-10 text-gray-400" />
+            <div className="text-center py-8 md:py-12">
+              <div className="bg-gray-100 rounded-full w-16 h-16 md:w-20 md:h-20 flex items-center justify-center mx-auto mb-4">
+                <FiShoppingBag className="h-8 w-8 md:h-10 md:w-10 text-gray-400" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <h3 className="text-base md:text-lg font-medium text-gray-900 mb-2">
                 No products found
               </h3>
-              <p className="text-gray-500 mb-6">
+              <p className="text-gray-500 mb-4 md:mb-6 text-sm md:text-base">
                 Get started by adding your first product to the inventory.
               </p>
               <Link
                 href="/admin/products/add"
-                className="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-xl text-white bg-gradient-to-r from-[#450209] to-[#5a0a0d] hover:from-[#350107] hover:to-[#450209] transition-all duration-200 transform hover:scale-105"
+                className="inline-flex items-center px-4 md:px-6 py-2 md:py-3 border border-transparent text-sm font-medium rounded-xl text-white bg-gradient-to-r from-[#450209] to-[#5a0a0d] hover:from-[#350107] hover:to-[#450209] transition-all duration-200 transform hover:scale-105"
               >
                 <FiPlus className="mr-2 h-4 w-4" />
                 Add Your First Product
@@ -490,20 +500,20 @@ export default function AdminDashboard() {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         <Link
           href="/admin/products"
-          className="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-200 transform hover:scale-105 border-l-4 border-green-500"
+          className="group bg-white rounded-2xl shadow-lg p-4 md:p-6 hover:shadow-xl transition-all duration-200 transform hover:scale-105 border-l-4 border-green-500"
         >
-          <div className="flex items-center space-x-4">
-            <div className="bg-green-100 p-4 rounded-xl group-hover:bg-green-200 transition-colors duration-200">
-              <FiShoppingBag className="h-8 w-8 text-green-600" />
+          <div className="flex items-center space-x-3 md:space-x-4">
+            <div className="bg-green-100 p-3 md:p-4 rounded-xl group-hover:bg-green-200 transition-colors duration-200 flex-shrink-0">
+              <FiShoppingBag className="h-6 w-6 md:h-8 md:w-8 text-green-600" />
             </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 text-lg">
+            <div className="min-w-0">
+              <h3 className="font-semibold text-gray-900 text-base md:text-lg">
                 Manage Products
               </h3>
-              <p className="text-gray-600">
+              <p className="text-gray-600 text-sm md:text-base">
                 Add, edit, or remove products from inventory
               </p>
             </div>
@@ -512,17 +522,17 @@ export default function AdminDashboard() {
 
         <Link
           href="/admin/contacts"
-          className="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-200 transform hover:scale-105 border-l-4 border-red-500"
+          className="group bg-white rounded-2xl shadow-lg p-4 md:p-6 hover:shadow-xl transition-all duration-200 transform hover:scale-105 border-l-4 border-red-500"
         >
-          <div className="flex items-center space-x-4">
-            <div className="bg-red-100 p-4 rounded-xl group-hover:bg-red-200 transition-colors duration-200">
-              <FiMail className="h-8 w-8 text-red-600" />
+          <div className="flex items-center space-x-3 md:space-x-4">
+            <div className="bg-red-100 p-3 md:p-4 rounded-xl group-hover:bg-red-200 transition-colors duration-200 flex-shrink-0">
+              <FiMail className="h-6 w-6 md:h-8 md:w-8 text-red-600" />
             </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 text-lg">
+            <div className="min-w-0">
+              <h3 className="font-semibold text-gray-900 text-base md:text-lg">
                 Contact Messages
               </h3>
-              <p className="text-gray-600">
+              <p className="text-gray-600 text-sm md:text-base">
                 View and respond to customer inquiries
               </p>
             </div>
@@ -531,17 +541,17 @@ export default function AdminDashboard() {
 
         <Link
           href="/admin/applications"
-          className="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-200 transform hover:scale-105 border-l-4 border-[#450209]"
+          className="group bg-white rounded-2xl shadow-lg p-4 md:p-6 hover:shadow-xl transition-all duration-200 transform hover:scale-105 border-l-4 border-[#450209] sm:col-span-2 lg:col-span-1"
         >
-          <div className="flex items-center space-x-4">
-            <div className="bg-red-100 p-4 rounded-xl group-hover:bg-red-200 transition-colors duration-200">
-              <FiFileText className="h-8 w-8 text-[#450209]" />
+          <div className="flex items-center space-x-3 md:space-x-4">
+            <div className="bg-red-100 p-3 md:p-4 rounded-xl group-hover:bg-red-200 transition-colors duration-200 flex-shrink-0">
+              <FiFileText className="h-6 w-6 md:h-8 md:w-8 text-[#450209]" />
             </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 text-lg">
+            <div className="min-w-0">
+              <h3 className="font-semibold text-gray-900 text-base md:text-lg">
                 All Applications
               </h3>
-              <p className="text-gray-600">
+              <p className="text-gray-600 text-sm md:text-base">
                 Review vendor, blogger & content creator apps
               </p>
             </div>
@@ -550,17 +560,17 @@ export default function AdminDashboard() {
 
         <Link
           href="/admin/vendors"
-          className="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-200 transform hover:scale-105 border-l-4 border-indigo-500"
+          className="group bg-white rounded-2xl shadow-lg p-4 md:p-6 hover:shadow-xl transition-all duration-200 transform hover:scale-105 border-l-4 border-indigo-500"
         >
-          <div className="flex items-center space-x-4">
-            <div className="bg-indigo-100 p-4 rounded-xl group-hover:bg-indigo-200 transition-colors duration-200">
-              <FiFileText className="h-8 w-8 text-indigo-600" />
+          <div className="flex items-center space-x-3 md:space-x-4">
+            <div className="bg-indigo-100 p-3 md:p-4 rounded-xl group-hover:bg-indigo-200 transition-colors duration-200 flex-shrink-0">
+              <FiFileText className="h-6 w-6 md:h-8 md:w-8 text-indigo-600" />
             </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 text-lg">
+            <div className="min-w-0">
+              <h3 className="font-semibold text-gray-900 text-base md:text-lg">
                 Vendor Applications
               </h3>
-              <p className="text-gray-600">
+              <p className="text-gray-600 text-sm md:text-base">
                 Review and approve vendor partnerships
               </p>
             </div>
@@ -569,31 +579,33 @@ export default function AdminDashboard() {
 
         <Link
           href="/admin/content-creators"
-          className="group bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-200 transform hover:scale-105 border-l-4 border-blue-500"
+          className="group bg-white rounded-2xl shadow-lg p-4 md:p-6 hover:shadow-xl transition-all duration-200 transform hover:scale-105 border-l-4 border-blue-500"
         >
-          <div className="flex items-center space-x-4">
-            <div className="bg-blue-100 p-4 rounded-xl group-hover:bg-blue-200 transition-colors duration-200">
-              <FiVideo className="h-8 w-8 text-blue-600" />
+          <div className="flex items-center space-x-3 md:space-x-4">
+            <div className="bg-blue-100 p-3 md:p-4 rounded-xl group-hover:bg-blue-200 transition-colors duration-200 flex-shrink-0">
+              <FiVideo className="h-6 w-6 md:h-8 md:w-8 text-blue-600" />
             </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 text-lg">
+            <div className="min-w-0">
+              <h3 className="font-semibold text-gray-900 text-base md:text-lg">
                 Content Creators
               </h3>
-              <p className="text-gray-600">
+              <p className="text-gray-600 text-sm md:text-base">
                 Manage content creator partnerships
               </p>
             </div>
           </div>
         </Link>
 
-        <div className="bg-gradient-to-br from-[#450209] to-[#5a0a0d] rounded-2xl shadow-lg p-6 text-white">
-          <div className="flex items-center space-x-4">
-            <div className="bg-white/20 p-4 rounded-xl">
-              <FiEye className="h-8 w-8 text-white" />
+        <div className="bg-gradient-to-br from-[#450209] to-[#5a0a0d] rounded-2xl shadow-lg p-4 md:p-6 text-white">
+          <div className="flex items-center space-x-3 md:space-x-4">
+            <div className="bg-white/20 p-3 md:p-4 rounded-xl flex-shrink-0">
+              <FiEye className="h-6 w-6 md:h-8 md:w-8 text-white" />
             </div>
-            <div>
-              <h3 className="font-semibold text-lg">System Overview</h3>
-              <p className="text-lg font-bold">
+            <div className="min-w-0">
+              <h3 className="font-semibold text-base md:text-lg">
+                System Overview
+              </h3>
+              <p className="text-lg md:text-xl font-bold">
                 {stats.contacts +
                   stats.professionals +
                   stats.applications.vendors +
@@ -601,7 +613,9 @@ export default function AdminDashboard() {
                   stats.applications.contentCreators +
                   stats.internships}
               </p>
-              <p className="text-white/80">Total submissions managed</p>
+              <p className="text-white/80 text-sm md:text-base">
+                Total submissions managed
+              </p>
             </div>
           </div>
         </div>

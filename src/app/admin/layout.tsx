@@ -94,84 +94,71 @@ function AdminContent({ children }: AdminLayoutProps) {
                 <FiX className="h-6 w-6 text-white" />
               </button>
             </div>
-            <SidebarContent
-              navigation={navigation}
-              pathname={pathname}
-              user={user}
-              handleLogout={handleLogout}
-            />
+            <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
+              <SidebarContent
+                navigation={navigation}
+                pathname={pathname}
+                user={user}
+                handleLogout={handleLogout}
+              />
+            </div>
           </div>
         </div>
       )}
 
       {/* Desktop sidebar */}
       <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
-        <SidebarContent
-          navigation={navigation}
-          pathname={pathname}
-          user={user}
-          handleLogout={handleLogout}
-        />
+        <div className="flex-1 flex flex-col min-h-0 bg-white/95 backdrop-blur-sm border-r border-gray-200/70 shadow-xl">
+          <SidebarContent
+            navigation={navigation}
+            pathname={pathname}
+            user={user}
+            handleLogout={handleLogout}
+          />
+        </div>
       </div>
 
       {/* Main content */}
       <div className="md:pl-64 flex flex-col flex-1">
         {/* Top header */}
         <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-sm border-b border-gray-200/70 shadow-sm">
-          <div className="px-4 py-4 sm:px-6">
+          <div className="px-3 py-3 md:px-6 md:py-4">
             <div className="flex items-center justify-between">
-              <div className="flex items-center">
+              <div className="flex items-center min-w-0 flex-1">
                 <button
-                  className="md:hidden p-2 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors duration-200"
+                  className="md:hidden p-2 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors duration-200 mr-2"
                   onClick={() => setSidebarOpen(true)}
                 >
-                  <FiMenu className="h-6 w-6" />
+                  <FiMenu className="h-5 w-5 md:h-6 md:w-6" />
                 </button>
-                <h1 className="ml-3 md:ml-0 text-xl font-semibold text-gray-900">
+                <h1 className="text-lg md:text-xl font-semibold text-gray-900 truncate">
                   {getPageTitle(pathname)}
                 </h1>
               </div>
 
-              <div className="flex items-center space-x-3">
-                {/* Search */}
-                {/* <div className="hidden lg:block">
-                  <div className="relative">
-                    <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                    <input
-                      type="text"
-                      placeholder="Search..."
-                      className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#450209] focus:border-[#450209] text-sm bg-gray-50 focus:bg-white transition-colors"
-                    />
-                  </div>
-                </div> */}
-
-                {/* Notifications */}
-                {/* <button className="p-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors duration-200">
-                  <FiBell className="h-5 w-5" />
-                </button> */}
-
+              <div className="flex items-center space-x-2 md:space-x-3">
                 {/* User dropdown */}
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-2 md:space-x-3">
                   <div className="hidden sm:block text-right">
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className="text-xs md:text-sm font-medium text-gray-900 truncate">
                       {user?.firstName} {user?.lastName}
                     </p>
                     <p className="text-xs text-gray-500">
                       {user?.role === "super_admin" ? "Super Admin" : "Admin"}
                     </p>
                   </div>
-                  <div className="h-8 w-8 bg-gradient-to-r from-[#450209] to-[#5a0a0d] rounded-full flex items-center justify-center">
-                    <FiUser className="h-4 w-4 text-white" />
+                  <div className="h-7 w-7 md:h-8 md:w-8 bg-gradient-to-r from-[#450209] to-[#5a0a0d] rounded-full flex items-center justify-center">
+                    <FiUser className="h-3 w-3 md:h-4 md:w-4 text-white" />
                   </div>
                 </div>
 
                 {/* Logout button */}
                 <button
                   onClick={handleLogout}
-                  className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-[#450209] to-[#5a0a0d] hover:from-[#350107] hover:to-[#450209] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#450209] transition-all duration-200 transform hover:scale-105"
+                  className="inline-flex items-center px-2 md:px-3 py-1.5 md:py-2 border border-transparent text-xs md:text-sm font-medium rounded-lg text-white bg-gradient-to-r from-[#450209] to-[#5a0a0d] hover:from-[#350107] hover:to-[#450209] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#450209] transition-all duration-200 transform hover:scale-105"
                 >
-                  <FiLogOut className="h-4 w-4" />
-                  <span className="ml-2 hidden sm:block">Logout</span>
+                  <FiLogOut className="h-3 w-3 md:h-4 md:w-4" />
+                  <span className="ml-1 md:ml-2 hidden sm:block">Logout</span>
                 </button>
               </div>
             </div>
@@ -179,7 +166,7 @@ function AdminContent({ children }: AdminLayoutProps) {
         </div>
 
         {/* Page content */}
-        <main className="flex-1 p-6">
+        <main className="flex-1 p-3 md:p-6">
           <div className="max-w-7xl mx-auto">{children}</div>
         </main>
       </div>
@@ -192,16 +179,17 @@ function SidebarContent({ navigation, pathname, user, handleLogout }: any) {
   return (
     <div className="flex flex-col flex-grow bg-white/95 backdrop-blur-sm border-r border-gray-200/70 shadow-xl">
       {/* Logo */}
-      <div className="flex items-center flex-shrink-0 px-6 py-6 border-b border-gray-200/50">
-        <img className="h-10 w-auto" src="/web-logo.png" alt="Infinity Zone" />
-        {/* <span className="ml-3 text-xl font-bold bg-gradient-to-r from-[#450209] to-[#5a0a0d] bg-clip-text text-transparent">
-          Admin
-        </span> */}
+      <div className="flex items-center flex-shrink-0 px-4 md:px-6 py-4 md:py-6 border-b border-gray-200/50">
+        <img
+          className="h-8 md:h-10 w-auto"
+          src="/web-logo.png"
+          alt="Infinity Zone"
+        />
       </div>
 
       {/* Navigation */}
-      <div className="mt-6 flex-grow flex flex-col">
-        <nav className="flex-1 px-4 space-y-2">
+      <div className="mt-4 md:mt-6 flex-grow flex flex-col">
+        <nav className="flex-1 px-3 md:px-4 space-y-1 md:space-y-2">
           {navigation.map((item: any) => {
             const isActive =
               pathname === item.href || pathname.startsWith(item.href + "/");
@@ -209,22 +197,24 @@ function SidebarContent({ navigation, pathname, user, handleLogout }: any) {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
+                className={`group flex items-center px-3 md:px-4 py-2 md:py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
                   isActive
                     ? "bg-gradient-to-r from-[#450209] to-[#5a0a0d] text-white shadow-lg transform scale-105"
                     : "text-gray-700 hover:text-[#450209] hover:bg-gray-50 hover:transform hover:scale-105"
                 }`}
               >
                 <item.icon
-                  className={`mr-4 flex-shrink-0 h-5 w-5 transition-colors duration-200 ${
+                  className={`mr-3 md:mr-4 flex-shrink-0 h-4 w-4 md:h-5 md:w-5 transition-colors duration-200 ${
                     isActive
                       ? "text-white"
                       : "text-gray-400 group-hover:text-[#450209]"
                   }`}
                 />
-                <span className="font-medium">{item.name}</span>
+                <span className="font-medium text-sm md:text-base">
+                  {item.name}
+                </span>
                 {isActive && (
-                  <div className="ml-auto w-2 h-2 bg-white rounded-full opacity-75"></div>
+                  <div className="ml-auto w-1.5 h-1.5 md:w-2 md:h-2 bg-white rounded-full opacity-75"></div>
                 )}
               </Link>
             );
@@ -232,14 +222,14 @@ function SidebarContent({ navigation, pathname, user, handleLogout }: any) {
         </nav>
 
         {/* User info */}
-        <div className="flex-shrink-0 border-t border-gray-200/50 p-4">
+        <div className="flex-shrink-0 border-t border-gray-200/50 p-3 md:p-4">
           <div className="flex items-center">
-            <div className="flex items-center flex-1">
-              <div className="bg-gradient-to-r from-[#450209] to-[#5a0a0d] rounded-full p-3">
-                <FiUser className="h-5 w-5 text-white" />
+            <div className="flex items-center flex-1 min-w-0">
+              <div className="bg-gradient-to-r from-[#450209] to-[#5a0a0d] rounded-full p-2 md:p-3">
+                <FiUser className="h-4 w-4 md:h-5 md:w-5 text-white" />
               </div>
-              <div className="ml-3 flex-1">
-                <p className="text-sm font-medium text-gray-900">
+              <div className="ml-2 md:ml-3 flex-1 min-w-0">
+                <p className="text-xs md:text-sm font-medium text-gray-900 truncate">
                   {user?.firstName} {user?.lastName}
                 </p>
                 <p className="text-xs text-gray-500">

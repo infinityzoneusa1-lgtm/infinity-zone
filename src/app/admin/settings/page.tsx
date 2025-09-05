@@ -180,19 +180,19 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 px-4 sm:px-6 lg:px-8 py-8">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 px-3 md:px-6 lg:px-8 py-6 md:py-8">
+      <div className="max-w-7xl mx-auto space-y-6 md:space-y-8">
         {/* Welcome Header */}
-        <div className="bg-gradient-to-r from-[#450209] to-[#5a0a0d] rounded-2xl shadow-xl p-8 text-white">
-          <div className="flex justify-between items-center">
+        <div className="bg-gradient-to-r from-[#450209] to-[#5a0a0d] rounded-2xl shadow-xl p-4 md:p-8 text-white">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <h1 className="text-3xl font-bold mb-2">Settings</h1>
-              <p className="text-white/80">
+              <h1 className="text-2xl md:text-3xl font-bold mb-2">Settings</h1>
+              <p className="text-white/80 text-sm md:text-base">
                 Manage your account settings and preferences
               </p>
             </div>
-            <div className="bg-white/20 backdrop-blur-sm rounded-xl px-6 py-3">
-              <span className="text-white font-medium">
+            <div className="bg-white/20 backdrop-blur-sm rounded-xl px-4 md:px-6 py-2 md:py-3">
+              <span className="text-white font-medium text-sm md:text-base">
                 {user?.role === "super_admin" ? "Super Admin" : "Admin"}
               </span>
             </div>
@@ -212,24 +212,27 @@ export default function SettingsPage() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8">
           {/* Profile Information */}
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold text-gray-900 flex items-center">
-                <FiUser className="mr-2 h-5 w-5" />
+          <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6">
+            <div className="mb-4 md:mb-6">
+              <h2 className="text-lg md:text-xl font-semibold text-gray-900 flex items-center">
+                <FiUser className="mr-2 h-4 w-4 md:h-5 md:w-5" />
                 Profile Information
               </h2>
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="text-xs md:text-sm text-gray-600 mt-1">
                 Update your email and personal details
               </p>
             </div>
 
-            <form onSubmit={handleProfileUpdate} className="space-y-4">
+            <form
+              onSubmit={handleProfileUpdate}
+              className="space-y-3 md:space-y-4"
+            >
               {/* Email Field */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  <FiMail className="inline mr-1 h-4 w-4" />
+                  <FiMail className="inline mr-1 h-3 w-3 md:h-4 md:w-4" />
                   Email Address
                 </label>
                 <input
@@ -238,7 +241,7 @@ export default function SettingsPage() {
                   onChange={(e) =>
                     setProfileData({ ...profileData, email: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#450209] focus:border-transparent"
+                  className="w-full px-3 py-2 md:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#450209] focus:border-transparent text-sm md:text-base"
                   required
                 />
               </div>
@@ -257,7 +260,7 @@ export default function SettingsPage() {
                       firstName: e.target.value,
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#450209] focus:border-transparent"
+                  className="w-full px-3 py-2 md:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#450209] focus:border-transparent text-sm md:text-base"
                   required
                 />
               </div>
@@ -273,7 +276,7 @@ export default function SettingsPage() {
                   onChange={(e) =>
                     setProfileData({ ...profileData, lastName: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#450209] focus:border-transparent"
+                  className="w-full px-3 py-2 md:py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#450209] focus:border-transparent text-sm md:text-base"
                   required
                 />
               </div>
@@ -281,7 +284,7 @@ export default function SettingsPage() {
               <button
                 type="submit"
                 disabled={profileLoading}
-                className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-xl shadow-lg text-sm font-medium text-white bg-gradient-to-r from-[#450209] to-[#5a0a0d] hover:from-[#5a0a0d] hover:to-[#450209] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#450209] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                className="w-full flex items-center justify-center px-4 py-2 md:py-3 border border-transparent rounded-xl shadow-lg text-sm font-medium text-white bg-gradient-to-r from-[#450209] to-[#5a0a0d] hover:from-[#5a0a0d] hover:to-[#450209] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#450209] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               >
                 {profileLoading ? (
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
@@ -294,22 +297,25 @@ export default function SettingsPage() {
           </div>
 
           {/* Password Change */}
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold text-gray-900 flex items-center">
-                <FiLock className="mr-2 h-5 w-5" />
+          <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6">
+            <div className="mb-4 md:mb-6">
+              <h2 className="text-lg md:text-xl font-semibold text-gray-900 flex items-center">
+                <FiLock className="mr-2 h-4 w-4 md:h-5 md:w-5" />
                 Change Password
               </h2>
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="text-xs md:text-sm text-gray-600 mt-1">
                 Update your password to keep your account secure
               </p>
             </div>
 
-            <form onSubmit={handlePasswordUpdate} className="space-y-4">
+            <form
+              onSubmit={handlePasswordUpdate}
+              className="space-y-3 md:space-y-4"
+            >
               {/* Current Password */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  <FiLock className="inline mr-1 h-4 w-4" />
+                  <FiLock className="inline mr-1 h-3 w-3 md:h-4 md:w-4" />
                   Current Password
                 </label>
                 <div className="relative">
@@ -322,7 +328,7 @@ export default function SettingsPage() {
                         currentPassword: e.target.value,
                       })
                     }
-                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#450209] focus:border-transparent"
+                    className="w-full px-3 py-2 md:py-3 pr-10 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#450209] focus:border-transparent text-sm md:text-base"
                     placeholder="Enter current password"
                     required
                   />
@@ -355,7 +361,7 @@ export default function SettingsPage() {
                         newPassword: e.target.value,
                       })
                     }
-                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#450209] focus:border-transparent"
+                    className="w-full px-3 py-2 md:py-3 pr-10 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#450209] focus:border-transparent text-sm md:text-base"
                     placeholder="Enter new password"
                     required
                   />
@@ -388,7 +394,7 @@ export default function SettingsPage() {
                         confirmPassword: e.target.value,
                       })
                     }
-                    className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#450209] focus:border-transparent"
+                    className="w-full px-3 py-2 md:py-3 pr-10 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#450209] focus:border-transparent text-sm md:text-base"
                     placeholder="Confirm new password"
                     required
                   />
@@ -409,7 +415,7 @@ export default function SettingsPage() {
               <button
                 type="submit"
                 disabled={passwordLoading}
-                className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-xl shadow-lg text-sm font-medium text-white bg-gradient-to-r from-[#450209] to-[#5a0a0d] hover:from-[#5a0a0d] hover:to-[#450209] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#450209] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                className="w-full flex items-center justify-center px-4 py-2 md:py-3 border border-transparent rounded-xl shadow-lg text-sm font-medium text-white bg-gradient-to-r from-[#450209] to-[#5a0a0d] hover:from-[#5a0a0d] hover:to-[#450209] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#450209] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               >
                 {passwordLoading ? (
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
@@ -423,26 +429,26 @@ export default function SettingsPage() {
         </div>
 
         {/* Account Information */}
-        <div className="bg-white rounded-2xl shadow-lg p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">
+        <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6">
+          <h2 className="text-lg md:text-xl font-semibold text-gray-900 mb-4 md:mb-6">
             Account Information
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-gray-50 rounded-xl p-4">
-              <label className="block text-sm font-medium text-gray-500">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+            <div className="bg-gray-50 rounded-xl p-3 md:p-4">
+              <label className="block text-xs md:text-sm font-medium text-gray-500">
                 Username
               </label>
-              <p className="mt-1 text-lg font-medium text-gray-900">
+              <p className="mt-1 text-base md:text-lg font-medium text-gray-900">
                 @{user?.username}
               </p>
             </div>
-            <div className="bg-gray-50 rounded-xl p-4">
-              <label className="block text-sm font-medium text-gray-500">
+            <div className="bg-gray-50 rounded-xl p-3 md:p-4">
+              <label className="block text-xs md:text-sm font-medium text-gray-500">
                 Role
               </label>
               <p className="mt-2">
                 <span
-                  className={`inline-flex items-center px-3 py-1 text-sm font-medium rounded-full ${
+                  className={`inline-flex items-center px-2 md:px-3 py-1 text-xs md:text-sm font-medium rounded-full ${
                     user?.role === "super_admin"
                       ? "bg-purple-100 text-purple-800"
                       : "bg-blue-100 text-blue-800"
