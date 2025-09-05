@@ -310,7 +310,7 @@ export function Header() {
                   Call us 24/7
                 </span>
                 <span className="text-sm font-bold text-[#450209]">
-                  +08 9229 8228
+                  +1 (844)699-4846
                 </span>
               </div>
             </div>
@@ -457,7 +457,7 @@ export function Header() {
                         Call us 24/7
                       </span>
                       <span className="text-base font-bold text-[#450209]">
-                        +08 9229 8228
+                        +1 (844)699-4846
                       </span>
                     </div>
                   </div>
