@@ -42,9 +42,7 @@ export async function POST(request: NextRequest) {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(amount), // Amount in cents
       currency,
-      automatic_payment_methods: {
-        enabled: true,
-      },
+      payment_method_types: ['card'], // Explicitly specify card instead of automatic
       metadata: {
         orderId: `order_${Date.now()}`,
         customerEmail: orderDetails?.customer?.email || '',

@@ -54,50 +54,59 @@ function CheckoutForm({
   orderDetails,
   onSuccess,
   onFailure,
-}: StripeCheckoutProps) {
+}: {
+  amount: number;
+  orderDetails: OrderDetails;
+  onSuccess: () => void;
+  onFailure: (error: string) => void;
+}) {
   const stripe = useStripe();
   const elements = useElements();
-
   const [isLoading, setIsLoading] = useState(false);
-  const [clientSecret, setClientSecret] = useState("");
 
-  const createPaymentIntent = useCallback(async () => {
+  const createOrder = async (paymentIntentId: string) => {
     try {
-      const response = await fetch("/api/create-payment-intent", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          amount: amount * 100, // Convert to cents
-          currency: "usd",
-          orderDetails,
-        }),
-      });
+      const response = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
+        }/api/orders/create`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            customer: orderDetails.customer,
+            items: orderDetails.items,
+            subtotal: orderDetails.subtotal,
+            shipping: orderDetails.shipping,
+            tax: orderDetails.tax,
+            total: orderDetails.total,
+            paymentIntentId,
+            paymentStatus: "completed",
+          }),
+        }
+      );
 
-      const data = await response.json();
+      const result = await response.json();
 
-      if (data.error) {
-        throw new Error(data.error);
+      if (!result.success) {
+        console.error("Order creation failed:", result.message);
+        // Don't fail the entire flow if order creation fails
+      } else {
+        // console.log("Order created successfully:", result.data.orderNumber);
       }
-
-      setClientSecret(data.clientSecret);
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Failed to initialize payment";
-      console.error("Error creating payment intent:", error);
-      onFailure(errorMessage);
+    } catch (error) {
+      console.error("Error creating order:", error);
+      // Don't fail the entire flow if order creation fails
     }
-  }, [amount, orderDetails, onFailure]);
-
-  useEffect(() => {
-    createPaymentIntent();
-  }, [createPaymentIntent]);
+  };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!stripe || !elements || !clientSecret) {
+    if (!stripe || !elements) {
+      onFailure("Payment system not ready. Please try again.");
       return;
     }
 
@@ -113,11 +122,21 @@ function CheckoutForm({
       });
 
       if (error) {
+        console.error("Payment error:", error);
         onFailure(error.message || "Payment failed");
       } else if (paymentIntent && paymentIntent.status === "succeeded") {
+        // console.log("Payment succeeded:", paymentIntent);
+
+        // Create order in database after successful payment
+        await createOrder(paymentIntent.id);
+
         onSuccess();
+      } else {
+        console.warn("Unexpected payment status:", paymentIntent?.status);
+        onFailure("Payment processing incomplete");
       }
     } catch (error: unknown) {
+      console.error("Payment processing error:", error);
       const errorMessage =
         error instanceof Error ? error.message : "Payment processing failed";
       onFailure(errorMessage);
@@ -126,20 +145,18 @@ function CheckoutForm({
     }
   };
 
-  if (!clientSecret) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <Loader2 className="w-6 h-6 animate-spin" />
-        <span className="ml-2">Initializing payment...</span>
-      </div>
-    );
-  }
-
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <PaymentElement
         options={{
           layout: "tabs",
+          paymentMethodOrder: ["card"],
+          fields: {
+            billingDetails: {
+              name: "auto",
+              email: "auto",
+            },
+          },
         }}
       />
 
@@ -167,14 +184,60 @@ export function StripeCheckout({
   onSuccess,
   onFailure,
 }: StripeCheckoutProps) {
+  const [clientSecret, setClientSecret] = useState("");
+
+  useEffect(() => {
+    const createPaymentIntent = async () => {
+      try {
+        const response = await fetch("/api/create-payment-intent", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            amount: amount * 100,
+            currency: "usd",
+            orderDetails,
+          }),
+        });
+
+        const data = await response.json();
+        if (data.error) {
+          throw new Error(data.error);
+        }
+
+        setClientSecret(data.clientSecret);
+      } catch (error) {
+        console.error("Error creating payment intent:", error);
+        onFailure(
+          error instanceof Error
+            ? error.message
+            : "Failed to initialize payment"
+        );
+      }
+    };
+
+    createPaymentIntent();
+  }, [amount, orderDetails, onFailure]);
+
   const options = {
-    mode: "payment" as const,
-    amount: amount * 100,
-    currency: "usd",
+    clientSecret,
     appearance: {
       theme: "stripe" as const,
+      variables: {
+        colorPrimary: "#450209",
+      },
     },
   };
+
+  if (!clientSecret) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <Loader2 className="w-6 h-6 animate-spin" />
+        <span className="ml-2">Initializing payment...</span>
+      </div>
+    );
+  }
 
   return (
     <Elements stripe={stripePromise} options={options}>

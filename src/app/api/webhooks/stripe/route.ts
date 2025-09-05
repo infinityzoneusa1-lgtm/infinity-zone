@@ -62,11 +62,11 @@ export async function POST(request: NextRequest) {
 
       case 'payment_method.attached':
         const paymentMethod = event.data.object as Stripe.PaymentMethod;
-        console.log('PaymentMethod attached:', paymentMethod.id);
+        // console.log('PaymentMethod attached:', paymentMethod.id);
         break;
 
       default:
-        console.log(`Unhandled event type: ${event.type}`);
+        // console.log(`Unhandled event type: ${event.type}`);
     }
 
     return NextResponse.json({ received: true });
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
 }
 
 async function handlePaymentSuccess(paymentIntent: Stripe.PaymentIntent) {
-  console.log('Payment succeeded:', paymentIntent.id);
+  // console.log('Payment succeeded:', paymentIntent.id);
   
   // Extract order information from metadata
   const orderId = paymentIntent.metadata.orderId;
@@ -94,8 +94,8 @@ async function handlePaymentSuccess(paymentIntent: Stripe.PaymentIntent) {
     // 3. Trigger order fulfillment process
     // 4. Update inventory
     
-    console.log(`Order ${orderId} completed successfully for ${customerEmail}`);
-    console.log(`Payment amount: $${orderTotal}`);
+    // console.log(`Order ${orderId} completed successfully for ${customerEmail}`);
+    // console.log(`Payment amount: $${orderTotal}`);
     
     // Example: Send confirmation email (you would implement this)
     // await sendOrderConfirmationEmail(customerEmail, orderId, orderTotal);
@@ -109,7 +109,7 @@ async function handlePaymentSuccess(paymentIntent: Stripe.PaymentIntent) {
 }
 
 async function handlePaymentFailure(paymentIntent: Stripe.PaymentIntent) {
-  console.log('Payment failed:', paymentIntent.id);
+  // console.log('Payment failed:', paymentIntent.id);
   
   const orderId = paymentIntent.metadata.orderId;
   const customerEmail = paymentIntent.metadata.customerEmail;
@@ -120,7 +120,7 @@ async function handlePaymentFailure(paymentIntent: Stripe.PaymentIntent) {
     // 2. Send notification to customer about payment failure
     // 3. Optionally retry payment or request new payment method
     
-    console.log(`Payment failed for order ${orderId}, customer: ${customerEmail}`);
+    // console.log(`Payment failed for order ${orderId}, customer: ${customerEmail}`);
     
     // Example: Update order status
     // await updateOrderStatus(orderId, 'payment_failed');
@@ -131,7 +131,7 @@ async function handlePaymentFailure(paymentIntent: Stripe.PaymentIntent) {
 }
 
 async function handlePaymentCancellation(paymentIntent: Stripe.PaymentIntent) {
-  console.log('Payment canceled:', paymentIntent.id);
+  // console.log('Payment canceled:', paymentIntent.id);
   
   const orderId = paymentIntent.metadata.orderId;
   
@@ -140,7 +140,7 @@ async function handlePaymentCancellation(paymentIntent: Stripe.PaymentIntent) {
     // 1. Update order status to canceled
     // 2. Release any reserved inventory
     
-    console.log(`Payment canceled for order ${orderId}`);
+    // console.log(`Payment canceled for order ${orderId}`);
     
     // Example: Update order status
     // await updateOrderStatus(orderId, 'canceled');

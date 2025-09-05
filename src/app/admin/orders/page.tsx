@@ -13,45 +13,57 @@ import {
   FiCheckCircle,
   FiClock,
   FiAlertCircle,
+  FiX,
 } from "react-icons/fi";
 import Link from "next/link";
 
 interface Order {
   _id: string;
   orderNumber: string;
-  user: {
-    _id: string;
-    name: string;
-    email: string;
-  };
+  customer?: string; // Guest customer ID
   items: Array<{
-    product: {
-      _id: string;
-      title: string;
-      images: Array<{
-        url: string;
-        alt: string;
-      }>;
-    };
-    quantity: number;
+    product: string;
+    title: string;
     price: number;
+    quantity: number;
+    selectedCapacity?: string;
+    selectedColor?: string;
+    subtotal: number;
   }>;
-  status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
-  total: number;
+  pricing: {
+    subtotal: number;
+    shipping: number;
+    tax: number;
+    total: number;
+  };
   shippingAddress: {
-    street: string;
+    fullName: string;
+    email: string;
+    phone: string;
     city: string;
-    state: string;
-    postalCode: string;
+    zipCode: string;
     country: string;
   };
-  paymentStatus: "pending" | "paid" | "failed" | "refunded";
+  payment: {
+    method: string;
+    status: "pending" | "processing" | "completed" | "failed" | "refunded";
+    stripePaymentIntentId?: string;
+    paidAt?: string;
+  };
+  status:
+    | "pending"
+    | "confirmed"
+    | "processing"
+    | "shipped"
+    | "delivered"
+    | "cancelled";
   createdAt: string;
   updatedAt: string;
 }
 
 const statusColors = {
   pending: "bg-yellow-100 text-yellow-800 border-yellow-200",
+  confirmed: "bg-green-100 text-green-800 border-green-200",
   processing: "bg-blue-100 text-blue-800 border-blue-200",
   shipped: "bg-purple-100 text-purple-800 border-purple-200",
   delivered: "bg-green-100 text-green-800 border-green-200",
@@ -60,6 +72,7 @@ const statusColors = {
 
 const statusIcons = {
   pending: FiClock,
+  confirmed: FiCheckCircle,
   processing: FiPackage,
   shipped: FiTruck,
   delivered: FiCheckCircle,
@@ -68,7 +81,8 @@ const statusIcons = {
 
 const paymentStatusColors = {
   pending: "bg-yellow-100 text-yellow-800",
-  paid: "bg-green-100 text-green-800",
+  processing: "bg-blue-100 text-blue-800",
+  completed: "bg-green-100 text-green-800",
   failed: "bg-red-100 text-red-800",
   refunded: "bg-gray-100 text-gray-800",
 };
@@ -80,18 +94,25 @@ export default function AdminOrders() {
   const [statusFilter, setStatusFilter] = useState("");
   const [paymentFilter, setPaymentFilter] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
   const [orderToDelete, setOrderToDelete] = useState<string | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   useEffect(() => {
     fetchOrders();
   }, []);
+
+  // Debug logging useEffect
+  useEffect(() => {
+    // console.log("Orders state updated:", orders.length, orders);
+  }, [orders]);
 
   const fetchOrders = async () => {
     try {
       const response = await fetch(
         `${
           process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
-        }/api/orders`,
+        }/api/admin/orders`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
@@ -101,13 +122,25 @@ export default function AdminOrders() {
       );
       if (response.ok) {
         const data = await response.json();
-        setOrders(Array.isArray(data) ? data : []);
+        // console.log("Raw response data:", data);
+        // Handle new backend response format
+        const ordersArray = data.success
+          ? data.data
+          : Array.isArray(data)
+          ? data
+          : [];
+        // console.log("Processed orders array:", ordersArray);
+        // console.log("Orders array length:", ordersArray.length);
+        if (ordersArray.length > 0) {
+          // console.log("First order sample:", ordersArray[0]);
+        }
+        setOrders(ordersArray);
       } else {
-        console.error("Failed to fetch orders:", response.status);
+        // console.error("Failed to fetch orders:", response.status);
         setOrders([]);
       }
     } catch (error) {
-      console.error("Error fetching orders:", error);
+      // console.error("Error fetching orders:", error);
       setOrders([]);
     } finally {
       setLoading(false);
@@ -120,7 +153,7 @@ export default function AdminOrders() {
       const response = await fetch(
         `${
           process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
-        }/api/orders/${orderId}`,
+        }/api/admin/orders/${orderId}`,
         {
           method: "DELETE",
           headers: {
@@ -152,9 +185,9 @@ export default function AdminOrders() {
       const response = await fetch(
         `${
           process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:10000"
-        }/api/orders/${orderId}/status`,
+        }/api/admin/orders/${orderId}/status`,
         {
-          method: "PATCH",
+          method: "PUT",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -182,24 +215,36 @@ export default function AdminOrders() {
       (order.orderNumber || "")
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
-      (order.user?.name || "")
+      (order.shippingAddress.fullName || "")
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
-      (order.user?.email || "")
+      (order.shippingAddress.email || "")
         .toLowerCase()
         .includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "" || order.status === statusFilter;
     const matchesPayment =
-      paymentFilter === "" || order.paymentStatus === paymentFilter;
+      paymentFilter === "" || order.payment.status === paymentFilter;
     return matchesSearch && matchesStatus && matchesPayment;
   });
 
   const totalRevenue = filteredOrders.reduce(
-    (sum, order) => sum + (order.total || 0),
+    (sum, order) => sum + (order.pricing.total || 0),
     0
   );
   const averageOrderValue =
     filteredOrders.length > 0 ? totalRevenue / filteredOrders.length : 0;
+
+  // Debug filtered orders
+  // console.log("=== RENDER DEBUG ===");
+  // console.log("Total orders:", orders.length);
+  // console.log("Filtered orders:", filteredOrders.length);
+  // console.log("Search term:", searchTerm);
+  // console.log("Status filter:", statusFilter);
+  // console.log("Payment filter:", paymentFilter);
+  if (orders.length > 0) {
+    // console.log("Sample order:", orders[0]);
+  }
+  // console.log("===================");
 
   if (loading) {
     return (
@@ -327,6 +372,7 @@ export default function AdminOrders() {
               >
                 <option value="">All Statuses</option>
                 <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
                 <option value="processing">Processing</option>
                 <option value="shipped">Shipped</option>
                 <option value="delivered">Delivered</option>
@@ -344,7 +390,8 @@ export default function AdminOrders() {
               >
                 <option value="">All Payments</option>
                 <option value="pending">Pending</option>
-                <option value="paid">Paid</option>
+                <option value="processing">Processing</option>
+                <option value="completed">Completed</option>
                 <option value="failed">Failed</option>
                 <option value="refunded">Refunded</option>
               </select>
@@ -408,10 +455,10 @@ export default function AdminOrders() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">
-                          {order.user?.name || "Guest User"}
+                          {order.shippingAddress.fullName || "Guest User"}
                         </div>
                         <div className="text-sm text-gray-500">
-                          {order.user?.email || "No email"}
+                          {order.shippingAddress.email || "No email"}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -426,6 +473,7 @@ export default function AdminOrders() {
                             } focus:outline-none focus:ring-2 focus:ring-[#450209]`}
                           >
                             <option value="pending">Pending</option>
+                            <option value="confirmed">Confirmed</option>
                             <option value="processing">Processing</option>
                             <option value="shipped">Shipped</option>
                             <option value="delivered">Delivered</option>
@@ -436,15 +484,15 @@ export default function AdminOrders() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
                           className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${
-                            paymentStatusColors[order.paymentStatus]
+                            paymentStatusColors[order.payment.status]
                           }`}
                         >
-                          {order.paymentStatus}
+                          {order.payment.status}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className="text-lg font-bold text-gray-900">
-                          ${order.total?.toFixed(2) || "0.00"}
+                          ${order.pricing.total?.toFixed(2) || "0.00"}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
@@ -452,24 +500,23 @@ export default function AdminOrders() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right">
                         <div className="flex items-center justify-end space-x-3">
-                          <Link
-                            href={`/admin/orders/${order._id}`}
+                          <button
+                            onClick={() => {
+                              setSelectedOrder(order);
+                              setShowViewModal(true);
+                            }}
                             className="p-2 text-[#450209] hover:bg-[#450209]/10 rounded-lg transition-colors duration-200"
+                            title="View Order Details"
                           >
                             <FiEye className="h-4 w-4" />
-                          </Link>
-                          <Link
-                            href={`/admin/orders/edit/${order._id}`}
-                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200"
-                          >
-                            <FiEdit className="h-4 w-4" />
-                          </Link>
+                          </button>
                           <button
                             onClick={() => {
                               setOrderToDelete(order._id);
                               setShowDeleteModal(true);
                             }}
                             className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200"
+                            title="Delete Order"
                           >
                             <FiTrash2 className="h-4 w-4" />
                           </button>
@@ -501,6 +548,181 @@ export default function AdminOrders() {
           </table>
         </div>
       </div>
+
+      {/* View Order Details Modal */}
+      {showViewModal && selectedOrder && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto transform transition-all">
+            <div className="p-8">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold text-gray-900">
+                  Order Details - {selectedOrder.orderNumber}
+                </h3>
+                <button
+                  onClick={() => {
+                    setShowViewModal(false);
+                    setSelectedOrder(null);
+                  }}
+                  className="p-2 text-gray-400 hover:text-gray-600 rounded-lg"
+                >
+                  <FiX className="h-6 w-6" />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Customer Information */}
+                <div className="bg-gray-50 rounded-lg p-6">
+                  <h4 className="text-lg font-semibold text-gray-900 mb-4">
+                    Customer Information
+                  </h4>
+                  <div className="space-y-2">
+                    <p>
+                      <span className="font-medium">Name:</span>{" "}
+                      {selectedOrder.shippingAddress.fullName}
+                    </p>
+                    <p>
+                      <span className="font-medium">Email:</span>{" "}
+                      {selectedOrder.shippingAddress.email}
+                    </p>
+                    <p>
+                      <span className="font-medium">Phone:</span>{" "}
+                      {selectedOrder.shippingAddress.phone}
+                    </p>
+                    <p>
+                      <span className="font-medium">City:</span>{" "}
+                      {selectedOrder.shippingAddress.city}
+                    </p>
+                    <p>
+                      <span className="font-medium">ZIP:</span>{" "}
+                      {selectedOrder.shippingAddress.zipCode}
+                    </p>
+                    <p>
+                      <span className="font-medium">Country:</span>{" "}
+                      {selectedOrder.shippingAddress.country}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Order Status */}
+                <div className="bg-gray-50 rounded-lg p-6">
+                  <h4 className="text-lg font-semibold text-gray-900 mb-4">
+                    Order Status
+                  </h4>
+                  <div className="space-y-2">
+                    <p>
+                      <span className="font-medium">Status:</span>
+                      <span
+                        className={`ml-2 px-3 py-1 rounded-full text-xs font-medium ${
+                          statusColors[selectedOrder.status]
+                        }`}
+                      >
+                        {selectedOrder.status}
+                      </span>
+                    </p>
+                    <p>
+                      <span className="font-medium">Payment Status:</span>
+                      <span
+                        className={`ml-2 px-3 py-1 rounded-full text-xs font-medium ${
+                          paymentStatusColors[selectedOrder.payment.status]
+                        }`}
+                      >
+                        {selectedOrder.payment.status}
+                      </span>
+                    </p>
+                    <p>
+                      <span className="font-medium">Payment Method:</span>{" "}
+                      {selectedOrder.payment.method}
+                    </p>
+                    <p>
+                      <span className="font-medium">Created:</span>{" "}
+                      {new Date(selectedOrder.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Order Items */}
+              <div className="mt-6">
+                <h4 className="text-lg font-semibold text-gray-900 mb-4">
+                  Order Items
+                </h4>
+                <div className="bg-gray-50 rounded-lg p-6">
+                  <div className="space-y-4">
+                    {selectedOrder.items.map((item, index) => (
+                      <div
+                        key={index}
+                        className="flex justify-between items-center border-b border-gray-200 pb-4"
+                      >
+                        <div>
+                          <h5 className="font-medium text-gray-900">
+                            {item.title}
+                          </h5>
+                          <div className="text-sm text-gray-600">
+                            {item.selectedCapacity && (
+                              <p>Capacity: {item.selectedCapacity}</p>
+                            )}
+                            {item.selectedColor && (
+                              <p>Color: {item.selectedColor}</p>
+                            )}
+                            <p>Quantity: {item.quantity}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-medium">
+                            ${item.price.toFixed(2)} each
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            Subtotal: ${item.subtotal.toFixed(2)}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Pricing Summary */}
+              <div className="mt-6">
+                <h4 className="text-lg font-semibold text-gray-900 mb-4">
+                  Pricing Summary
+                </h4>
+                <div className="bg-gray-50 rounded-lg p-6">
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span>Subtotal:</span>
+                      <span>${selectedOrder.pricing.subtotal.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Shipping:</span>
+                      <span>${selectedOrder.pricing.shipping.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Tax:</span>
+                      <span>${selectedOrder.pricing.tax.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between border-t border-gray-300 pt-2 font-bold text-lg">
+                      <span>Total:</span>
+                      <span>${selectedOrder.pricing.total.toFixed(2)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-8 flex justify-end">
+                <button
+                  onClick={() => {
+                    setShowViewModal(false);
+                    setSelectedOrder(null);
+                  }}
+                  className="px-6 py-3 bg-[#450209] text-white rounded-lg hover:bg-[#450209]/90 transition-colors duration-200"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Delete Modal */}
       {showDeleteModal && (
