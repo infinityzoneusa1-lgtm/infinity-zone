@@ -15,10 +15,10 @@ Write-Host "Fetching latest changes..." -ForegroundColor Yellow
 git fetch origin
 
 # Check if we're behind
-$behind = git rev-list --count HEAD..origin/main
+$behind = git rev-list --count HEAD..origin/master
 if ($behind -gt 0) {
     Write-Host "Local branch is behind remote. Pulling changes..." -ForegroundColor Yellow
-    git pull origin main
+    git pull origin master
 }
 
 # Check if there are changes to commit
@@ -30,15 +30,15 @@ if ($changes) {
     Write-Host "Committing changes: $Message" -ForegroundColor Green
     git commit -m "$Message"
     
-    Write-Host "Pushing to main branch..." -ForegroundColor Green
-    git push origin main
+    Write-Host "Pushing to master branch..." -ForegroundColor Green
+    git push origin master
     
     Write-Host "Successfully pushed to GitHub!" -ForegroundColor Green
 } else {
     Write-Host "No local changes to push." -ForegroundColor Blue
     Write-Host "Creating empty commit to refresh GitHub..." -ForegroundColor Yellow
     git commit --allow-empty -m "Refresh GitHub status"
-    git push origin main
+    git push origin master
 }
 
 Write-Host "Done! Check GitHub now." -ForegroundColor Magenta
